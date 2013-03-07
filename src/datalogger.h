@@ -30,7 +30,7 @@ class dataLogger : public QThread
 {
   Q_OBJECT
 public:
-  dataLogger();
+  dataLogger(const QString pathToLog, const QString lognamePostString);
   void run();
 public slots:
 #ifdef USE_GPS

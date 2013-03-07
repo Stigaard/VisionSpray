@@ -26,14 +26,14 @@
 #include <iostream>
 #include <vector>
 
-dataLogger::dataLogger()
+dataLogger::dataLogger(const QString pathToLog, const QString lognamePostString)
 {
     //Generate log folder name
     QDateTime dateTime = QDateTime::currentDateTime();
     QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
-    logdir = new QDir("../../../MoDiCoVi field trials/");
-    logdir->mkdir(dateTimeString + " MoDiCoVi log");
-    logdir->cd(dateTimeString + " MoDiCoVi log");
+    logdir = new QDir(pathToLog);
+    logdir->mkdir(dateTimeString + lognamePostString);
+    logdir->cd(dateTimeString + lognamePostString);
     
     #ifdef USE_CAMERA
     this->initCamera();
