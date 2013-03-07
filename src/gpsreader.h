@@ -34,7 +34,7 @@
 #include <qt4/QtCore/QByteArray>
 #include <QMutex>
 #include "../include/qextserialport/src/qextserialport.h"
-#include "../include/qtgpscWidget/sattellite.h"
+#include "../include/qtgpscWidget/satellite.h"
 
 class gpsReader : public QThread
 {
