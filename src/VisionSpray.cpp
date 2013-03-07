@@ -21,7 +21,7 @@ VisionSpray::VisionSpray()
 
 #ifdef USE_DATALOGGER
     std::cout << "Logger activated" << std::endl;
-    this->log = new dataLogger("../../../MoDiCoVi field trials/", " MoDiCoVi log");
+    this->log = new dataLogger("../VisionSprayDataLog/", " VisionSpray log");
 //     connect(this->modi->timeKeeper, SIGNAL(spray(int)), this->log, SLOT(valve1Logger(int)));
 //     connect(this->modi, SIGNAL(weedAmount(float)), this->log, SLOT(weedAmountLogger(float)));
 //     connect(this->modi, SIGNAL(weedPressure(float)), this->log, SLOT(weedPressureLogger(float)));

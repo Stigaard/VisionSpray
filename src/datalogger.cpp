@@ -34,6 +34,7 @@ dataLogger::dataLogger(const QString pathToLog, const QString lognamePostString)
     logdir = new QDir(pathToLog);
     logdir->mkdir(dateTimeString + lognamePostString);
     logdir->cd(dateTimeString + lognamePostString);
+    std::cout << logdir->absolutePath().toStdString() << std::endl;
     
     #ifdef USE_CAMERA
     this->initCamera();
