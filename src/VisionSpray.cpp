@@ -14,7 +14,7 @@ VisionSpray::VisionSpray()
     this->camera->startAquisition();
     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat)), &dem, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
 #endif
-    
+
 #ifdef USE_GPS
     this->loadGPS();
 #endif
@@ -39,10 +39,10 @@ VisionSpray::VisionSpray()
     // 	      this->log, SLOT(NMEALogger(QByteArray,QByteArray,QList<QByteArray>)));
     #endif
 #endif
-      
-    drawGui();   
+
+    drawGui();
     connect(&dem, SIGNAL(newImage(cv::Mat)), view, SLOT(showImage(cv::Mat)));
-     
+
 #ifndef USE_CAMERA
     init_CameraSimulator();
     QTimer * camSimTimer = new QTimer(this);
@@ -50,12 +50,12 @@ VisionSpray::VisionSpray()
     connect(this, SIGNAL(newSimulatedImage(cv::Mat*)), this->modi, SLOT(evaluateImage(cv::Mat*)));
     this->imageSelect->setCurrentIndex(3);
     camSimTimer->start(1000);
-    #pragma message "compiling simulator"
+#pragma message "compiling simulator"
 #endif
-      
 
 
- //   connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->view, SLOT(showImage(cv::Mat*)));
+
+//   connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->view, SLOT(showImage(cv::Mat*)));
 //     connect(Valve1Btn, SIGNAL(pressed()), this, SLOT(turnValve1On()));
 //     connect(Valve1Btn, SIGNAL(released()), this, SLOT(turnValve1Off()));
 //     connect(Valve1Btn, SIGNAL(pressed()), this, SLOT(turnValve2On()));
