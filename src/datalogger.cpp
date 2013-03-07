@@ -174,13 +174,13 @@ void dataLogger::initCamera(void )
 
 
 
-void dataLogger::pngImageLogger(cv::Mat* image)
+void dataLogger::pngImageLogger(cv::Mat image)
 {
     std::vector<int> compression_params;
     compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(0);
 
-    cv::imwrite(pngImageDir->filePath(QString::number(QDateTime::currentMSecsSinceEpoch()) + ".png").toStdString(), *image, compression_params);
+    cv::imwrite(pngImageDir->filePath(QString::number(QDateTime::currentMSecsSinceEpoch()) + ".png").toStdString(), image, compression_params);
 }
 
 void dataLogger::rawImageLogger(void* img)

@@ -42,8 +42,8 @@ public slots:
                    float dGPSAge, int dGPSStation);
 #endif
 #ifdef USE_CAMERA
-    void rawImageLogger(void * img);
-    void pngImageLogger(cv::Mat* image);
+    void rawImageLogger(void* img);
+    void pngImageLogger(cv::Mat image);
 #endif
 
     void valve1Logger(int decision);

@@ -28,8 +28,8 @@ VisionSpray::VisionSpray()
 //     connect(this->modi, SIGNAL(runtime(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)),
 // 	    this->log, SLOT(runtimeLogger(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)));
     #ifdef USE_CAMERA
-	/*      connect(this->camera, SIGNAL(newImage(void*)), this->log, SLOT(rawImageLogger(void*)));
-	      connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*))); */
+    connect(&dem, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLogger(cv::Mat)));
+//    connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*)));
     #endif
 
     #ifdef USE_GPS
