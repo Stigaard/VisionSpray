@@ -8,37 +8,36 @@
 
 VisionSpray::VisionSpray()
 {
-       qRegisterMetaType< cv::Mat >("cv::Mat"); 
-//    modi = new algoritm();
+    qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
-       this->camera = new QTGIGE("21272795");
-     this->camera->startAquisition();
+    this->camera = new QTGIGE("21272795");
+    this->camera->startAquisition();
     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat)), &dem, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
 #endif
     
-  #ifdef USE_GPS
-      this->loadGPS();
-  #endif
-   
+#ifdef USE_GPS
+    this->loadGPS();
+#endif
+
 #ifdef USE_DATALOGGER
-      std::cout << "Logger activated" << std::endl;
+    std::cout << "Logger activated" << std::endl;
     this->log = new dataLogger();
 //     connect(this->modi->timeKeeper, SIGNAL(spray(int)), this->log, SLOT(valve1Logger(int)));
 //     connect(this->modi, SIGNAL(weedAmount(float)), this->log, SLOT(weedAmountLogger(float)));
 //     connect(this->modi, SIGNAL(weedPressure(float)), this->log, SLOT(weedPressureLogger(float)));
 //     connect(this->modi, SIGNAL(runtime(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)),
 // 	    this->log, SLOT(runtimeLogger(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)));
-  #ifdef USE_CAMERA
-/*      connect(this->camera, SIGNAL(newImage(void*)), this->log, SLOT(rawImageLogger(void*)));
-      connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*))); */     
-  #endif
+    #ifdef USE_CAMERA
+	/*      connect(this->camera, SIGNAL(newImage(void*)), this->log, SLOT(rawImageLogger(void*)));
+	      connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*))); */
+    #endif
 
-  #ifdef USE_GPS
-//       connect(this->gps, SIGNAL(newGGA(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)),
-// 	      this->log, SLOT(GGALogger(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)));
-//       connect(this->gps, SIGNAL(newNMEASentence(QByteArray,QByteArray,QList<QByteArray>)),
-// 	      this->log, SLOT(NMEALogger(QByteArray,QByteArray,QList<QByteArray>)));
-  #endif
+    #ifdef USE_GPS
+    //       connect(this->gps, SIGNAL(newGGA(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)),
+    // 	      this->log, SLOT(GGALogger(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)));
+    //       connect(this->gps, SIGNAL(newNMEASentence(QByteArray,QByteArray,QList<QByteArray>)),
+    // 	      this->log, SLOT(NMEALogger(QByteArray,QByteArray,QList<QByteArray>)));
+    #endif
 #endif
       
     drawGui();   
@@ -51,7 +50,7 @@ VisionSpray::VisionSpray()
     connect(this, SIGNAL(newSimulatedImage(cv::Mat*)), this->modi, SLOT(evaluateImage(cv::Mat*)));
     this->imageSelect->setCurrentIndex(3);
     camSimTimer->start(1000);
-#pragma message "compiling simulator"
+    #pragma message "compiling simulator"
 #endif
       
 
@@ -70,29 +69,29 @@ VisionSpray::VisionSpray()
 #ifndef USE_CAMERA
 void VisionSpray::init_CameraSimulator(void )
 {
-  QDir simdir("/home/morten/Dropbox/Ph.D./MoDiCoVi field trials/Spray/2012-10-08 14:40:07.001 MoDiCoVi log/converted_png/");
-  simdir.setSorting(QDir::Name);
-  simulationFiles = new QFileInfoList();
-  *simulationFiles = simdir.entryInfoList();
-  fileptr = 2;
+    QDir simdir("/home/morten/Dropbox/Ph.D./MoDiCoVi field trials/Spray/2012-10-08 14:40:07.001 MoDiCoVi log/converted_png/");
+    simdir.setSorting(QDir::Name);
+    simulationFiles = new QFileInfoList();
+    *simulationFiles = simdir.entryInfoList();
+    fileptr = 2;
 //  connect(this, SIGNAL(newSimulatedImage(cv::Mat*)), this->view, SLOT(showImage(cv::Mat*)));
 }
 
 void VisionSpray::cameraSimulator(void )
 {
-  fileptr++;
-  if(fileptr>=simulationFiles->size())
-  {
-    fileptr--;
-    return;
-    fileptr = 2;
-  }
-  std::cout << "file:" << simulationFiles->at(fileptr).absoluteFilePath().toLocal8Bit().constData() << std::endl;
-  cv::Mat img;
-  img = cv::imread(simulationFiles->at(fileptr).absoluteFilePath().toLocal8Bit().constData());
-  cv::Mat RGB161616(768,1024, cv::DataType<uint16_t>::type);
-  img.convertTo(RGB161616, RGB161616.type(), 256.0);
-  emit(newSimulatedImage(&RGB161616));
+    fileptr++;
+    if(fileptr>=simulationFiles->size())
+    {
+        fileptr--;
+        return;
+        fileptr = 2;
+    }
+    std::cout << "file:" << simulationFiles->at(fileptr).absoluteFilePath().toLocal8Bit().constData() << std::endl;
+    cv::Mat img;
+    img = cv::imread(simulationFiles->at(fileptr).absoluteFilePath().toLocal8Bit().constData());
+    cv::Mat RGB161616(768,1024, cv::DataType<uint16_t>::type);
+    img.convertTo(RGB161616, RGB161616.type(), 256.0);
+    emit(newSimulatedImage(&RGB161616));
 }
 #endif
 
@@ -140,9 +139,9 @@ void VisionSpray::loadGPS(void )
     this->gps = new gpsReader();
     connect(this->gps, SIGNAL(satellitesUpdated(SatList)), this, SLOT(updateSatlist(SatList)));
     connect(this->gps, SIGNAL(newGGA(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)),
-    this, SLOT(updateSatStatus(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)));
+            this, SLOT(updateSatStatus(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)));
     connect(this->gps, SIGNAL(newVTG(QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,float,QByteArray)),
-	    this, SLOT(VTGReceiver(QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,float,QByteArray)));
+            this, SLOT(VTGReceiver(QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,QByteArray,float,QByteArray)));
     //connect(this, SIGNAL(velocity(float)), this->modi, SLOT(velocityReceiver(float)));
 }
 
@@ -151,7 +150,7 @@ void VisionSpray::drawGPSGui(void )
     this->gpsWidget = new QWidget(this->globalWidget);
     this->gpsLayout = new QGridLayout;
     this->satWidget = new SatView();
-    
+
     this->gpsQuality = new QButtonGroup(this->gpsWidget);
     this->gpsQualityInvalid = new QRadioButton("Invalid");
     this->gpsQualityGPSFix = new QRadioButton("GPS Fix");
@@ -182,76 +181,76 @@ void VisionSpray::drawGPSGui(void )
     this->gpsLayout->addWidget(this->gpsQualityManual, 8,0);
     this->gpsLayout->addWidget(this->gpsQualitySimulation, 9,0);
     this->gpsWidget->setLayout(this->gpsLayout);
-    
+
     this->gpsQualityInvalid->setChecked(true);
 }
 
 
 void VisionSpray::updateSatlist(SatList sats)
 {
-  SatList seenPRNs;
-  for(int i=0;i<sats.count();i++)
-  {
-    if(sats[i].prn != -1)
-      seenPRNs.push_back(sats[i]);
-  }
-  this->satWidget->setSatellites(seenPRNs);
+    SatList seenPRNs;
+    for(int i=0; i<sats.count(); i++)
+    {
+        if(sats[i].prn != -1)
+            seenPRNs.push_back(sats[i]);
+    }
+    this->satWidget->setSatellites(seenPRNs);
 }
 
 void VisionSpray::updateSatStatus(QByteArray time, QByteArray latitude, char latitudeHeading, QByteArray longitude, char longitudeHeading, int GPSQuality, int sattelitesInView, float horizontalDilution, float altitude, char altitudeUnit, QByteArray geoidalSeperation, char geoidalSeperationUnit, float dGPSAge, int dGPSStation)
 {
-  switch(GPSQuality)
-  {
+    switch(GPSQuality)
+    {
     case 0:
 //       this->setStyleSheet("{background-color: red; }");
-      this->gpsQualityInvalid->setChecked(true);
-      break;
+        this->gpsQualityInvalid->setChecked(true);
+        break;
     case 1:
 //       this->setStyleSheet("{background-color: yellow; }");
-      this->gpsQualityGPSFix->setChecked(true);
-      break;
+        this->gpsQualityGPSFix->setChecked(true);
+        break;
     case 2:
 //       this->setStyleSheet("{background-color: yellow; }");
-      this->gpsQualityDGPSFix->setChecked(true);
-      break;
+        this->gpsQualityDGPSFix->setChecked(true);
+        break;
     case 3:
-      this->gpsQualityPPSFix->setChecked(true);
-      break;
+        this->gpsQualityPPSFix->setChecked(true);
+        break;
     case 4:
 //       this->setStyleSheet("{background-color: green; }");
-      this->gpsQualityRTKFix->setChecked(true);
-      break;
+        this->gpsQualityRTKFix->setChecked(true);
+        break;
     case 5:
 //       this->setStyleSheet("{background-color: green; }");
-      this->gpsQualityFRTKFix->setChecked(true);
-      break;
+        this->gpsQualityFRTKFix->setChecked(true);
+        break;
     case 6:
-      this->gpsQualityEstimated->setChecked(true);
-      break;
+        this->gpsQualityEstimated->setChecked(true);
+        break;
     case 7:
-      this->gpsQualityManual->setChecked(true);
-      break;
+        this->gpsQualityManual->setChecked(true);
+        break;
     case 8:
-      this->gpsQualitySimulation->setChecked(true);
-      break;
+        this->gpsQualitySimulation->setChecked(true);
+        break;
     default:
-      this->gpsQualityInvalid->setChecked(true);
-      break;
-    
-  }
+        this->gpsQualityInvalid->setChecked(true);
+        break;
+
+    }
 }
 
 void VisionSpray::VTGReceiver(QByteArray trackMadeGood, QByteArray trackMadeGoodIndicator, QByteArray MagneticTrackMadeGood, QByteArray MagneticTrackMadeGoodIndicator, QByteArray GroundSpeedInKnots, QByteArray GroundSpeedInKnotsUnit, float GroundSpeedInKmh, QByteArray GroundSpeedInKmhUnit)
 {
-  emit(velocity(GroundSpeedInKmh));
+    emit(velocity(GroundSpeedInKmh));
 }
 
 #endif
 
 void VisionSpray::currentViewChanged(const QString& text)
 {
-  std::cout << "Received new view " << text.toLocal8Bit().data() << std::endl;
-  disconnect(this->view, SLOT(showImage(cv::Mat*)));
+    std::cout << "Received new view " << text.toLocal8Bit().data() << std::endl;
+    disconnect(this->view, SLOT(showImage(cv::Mat*)));
 }
 
 void VisionSpray::turnValve1Off(void )
