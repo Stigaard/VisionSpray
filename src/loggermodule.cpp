@@ -27,13 +27,20 @@
 #include <vector>
 
 bool LoggerModule::isAtLeastOneLoggerModuleInitialized = false;
-    
+QDir * LoggerModule::baseDirectory = 0;
+
 LoggerModule::LoggerModule(const QString pathToLog, const QString lognamePostString)
+{
+    ensureThatBaseDirectoryExists(pathToLog, "");
+    createSubLogDir(lognamePostString);
+}
+
+void LoggerModule::ensureThatBaseDirectoryExists(const QString pathToLog, const QString lognamePostString)
 {
     if(!isAtLeastOneLoggerModuleInitialized)
     {
         isAtLeastOneLoggerModuleInitialized = true;
-	createBaseLogDirectory(pathToLog, lognamePostString);
+        createBaseLogDirectory(pathToLog, lognamePostString);
     }
 }
 
@@ -42,11 +49,21 @@ void LoggerModule::createBaseLogDirectory(const QString pathToLog, const QString
     //Generate log folder name
     QDateTime dateTime = QDateTime::currentDateTime();
     QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
-    logdir = new QDir(pathToLog);
-    logdir->mkdir(dateTimeString + lognamePostString);
-    logdir->cd(dateTimeString + lognamePostString);
+    QDir * templogdir = new QDir(pathToLog);
+    // TODO: Insert assertion that the directory is valid.
+    templogdir->mkdir(dateTimeString + lognamePostString);
+    templogdir->cd(dateTimeString + lognamePostString);
     // Write directory where the log files are stored.
-    std::cout << logdir->absolutePath().toStdString() << std::endl;
+    std::cout << templogdir->absolutePath().toStdString() << std::endl;
+
+    baseDirectory = new QDir(templogdir->absolutePath());
+}
+
+void LoggerModule::createSubLogDir(const QString subDirName)
+{
+    logdir = new QDir(*baseDirectory);
+    logdir->mkdir(subDirName);
+    logdir->cd(subDirName);
 }
 
 void LoggerModule::run()
@@ -64,6 +81,6 @@ void LoggerModule::flushLogs(void )
 
 void LoggerModule::logInt(int value, const QString nameOfValue)
 {
-  std::cout << "Logging int value: " << value << " described by name: " << nameOfValue.toStdString() << std::endl;
+    std::cout << "Logging int value: " << value << " described by name: " << nameOfValue.toStdString() << std::endl;
 }
-  
+

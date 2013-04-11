@@ -39,8 +39,10 @@ private slots:
 private:
     static bool isAtLeastOneLoggerModuleInitialized;
     static QDir * baseDirectory;
-
+    
+    void ensureThatBaseDirectoryExists(const QString pathToLog, const QString lognamePostString);
     void createBaseLogDirectory(const QString pathToLog, const QString lognamePostString);
+    void createSubLogDir(const QString subDirName);
     
     QDir * logdir;
     QFile * runtimeLoggerFile;
