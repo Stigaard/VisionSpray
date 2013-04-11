@@ -40,6 +40,8 @@ private:
     static bool isAtLeastOneLoggerModuleInitialized;
     static QDir * baseDirectory;
 
+    void createBaseLogDirectory(const QString pathToLog, const QString lognamePostString);
+    
     QDir * logdir;
     QFile * runtimeLoggerFile;
     QTextStream * runtimeLoggerStream;

@@ -30,6 +30,15 @@ bool LoggerModule::isAtLeastOneLoggerModuleInitialized = false;
     
 LoggerModule::LoggerModule(const QString pathToLog, const QString lognamePostString)
 {
+    if(!isAtLeastOneLoggerModuleInitialized)
+    {
+        isAtLeastOneLoggerModuleInitialized = true;
+	createBaseLogDirectory(pathToLog, lognamePostString);
+    }
+}
+
+void LoggerModule::createBaseLogDirectory(const QString pathToLog, const QString lognamePostString)
+{
     //Generate log folder name
     QDateTime dateTime = QDateTime::currentDateTime();
     QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
