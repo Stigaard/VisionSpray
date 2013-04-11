@@ -31,6 +31,7 @@
 #ifdef USE_DATALOGGER
   #include "datalogger.h"
 #endif
+#include "loggermodule.h"
 
 class VisionSpray : public QMainWindow
 {
