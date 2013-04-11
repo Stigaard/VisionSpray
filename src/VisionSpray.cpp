@@ -8,10 +8,15 @@
 
 VisionSpray::VisionSpray()
 {
-    LoggerModule* tempLogger = new LoggerModule("hej", "asdfas");
+    LoggerModule* tempLogger = new LoggerModule("../LoggerModule/", "Testing");
     
     tempLogger->logInt(42, "first val");
     tempLogger->logInt(43, "first val");
+
+    LoggerModule* tempLogger2 = new LoggerModule("../LoggerModule/", "TestingTwo");
+    
+    tempLogger2->logInt(42, "first val");
+    tempLogger2->logInt(43, "first val");
 
     exit(0);
   
