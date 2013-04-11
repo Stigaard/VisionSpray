@@ -10,6 +10,10 @@ VisionSpray::VisionSpray()
 {
     LoggerModule* tempLogger = new LoggerModule("hej", "asdfas");
     
+    tempLogger->logInt(42, "first val");
+    tempLogger->logInt(43, "first val");
+
+    exit(0);
   
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA

@@ -50,3 +50,9 @@ void LoggerModule::flushLogs(void )
 {
 //    this->Valve1File->flush();
 }
+
+void LoggerModule::logInt(int value, const QString nameOfValue)
+{
+  std::cout << "Logging int value: " << value << " described by name: " << nameOfValue.toStdString() << std::endl;
+}
+  
