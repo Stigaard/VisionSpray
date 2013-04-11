@@ -37,10 +37,12 @@ public slots:
 private slots:
     void flushLogs(void);
 private:
+    static bool isAtLeastOneLoggerModuleInitialized;
+    static QDir * baseDirectory;
 
     QDir * logdir;
     QFile * runtimeLoggerFile;
     QTextStream * runtimeLoggerStream;
 };
 
-#endif // DATALOGGER_H
+#endif // LOGGERMODULE_H

@@ -26,6 +26,8 @@
 #include <iostream>
 #include <vector>
 
+bool LoggerModule::isAtLeastOneLoggerModuleInitialized = false;
+    
 LoggerModule::LoggerModule(const QString pathToLog, const QString lognamePostString)
 {
     //Generate log folder name
