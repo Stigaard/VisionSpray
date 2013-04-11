@@ -10,4 +10,5 @@ set(VisionSpray_SRCS
       ${CMAKE_CURRENT_SOURCE_DIR}/spraytimekeeper.cpp 
       ${CMAKE_CURRENT_SOURCE_DIR}/gpsreader.cpp 
       ${CMAKE_CURRENT_SOURCE_DIR}/demosaic_cv.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/loggermodule.cpp
     PARENT_SCOPE)

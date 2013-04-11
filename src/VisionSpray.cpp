@@ -8,6 +8,9 @@
 
 VisionSpray::VisionSpray()
 {
+    LoggerModule* tempLogger = new LoggerModule("hej", "asdfas");
+    
+  
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
     this->camera = new QTGIGE("21272795");

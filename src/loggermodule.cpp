@@ -28,6 +28,8 @@
 
 LoggerModule::LoggerModule(const QString pathToLog, const QString lognamePostString)
 {
+    std::cout << "Henrik Testing" << std::endl;
+  
     //Generate log folder name
     QDateTime dateTime = QDateTime::currentDateTime();
     QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
