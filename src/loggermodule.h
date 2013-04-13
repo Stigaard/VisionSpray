@@ -32,6 +32,8 @@ class LoggerModule : public QThread
 public:
     LoggerModule(const QString pathToLog, const QString lognamePostString);
     void run();
+    void activate();
+    void deactivate();
     void logInt(const QString nameOfValue, int value);
     void logString(const QString nameOfValue, char* value);
 public slots:
@@ -44,6 +46,8 @@ private:
     void ensureThatBaseDirectoryExists(const QString pathToLog, const QString lognamePostString);
     void createBaseLogDirectory(const QString pathToLog, const QString lognamePostString);
     void createSubLogDir(const QString subDirName);
+    
+    bool loggerIsActive;
     
     QDir * logdir;
     QFile * runtimeLoggerFile;

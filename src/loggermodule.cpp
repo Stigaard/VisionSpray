@@ -31,6 +31,7 @@ QDir * LoggerModule::baseDirectory = 0;
 
 LoggerModule::LoggerModule(const QString pathToLog, const QString lognamePostString)
 {
+    loggerIsActive = true;
     ensureThatBaseDirectoryExists(pathToLog, "");
     createSubLogDir(lognamePostString);
 }
@@ -74,6 +75,16 @@ void LoggerModule::run()
     QThread::run();
 }
 
+void LoggerModule::activate()
+{
+    loggerIsActive = true;
+}
+
+void LoggerModule::deactivate()
+{
+    loggerIsActive = false;
+}
+
 void LoggerModule::flushLogs(void )
 {
 //    this->Valve1File->flush();
@@ -81,33 +92,37 @@ void LoggerModule::flushLogs(void )
 
 void LoggerModule::logInt(const QString nameOfValue, int value)
 {
-    qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
-    
-    // TODO: Avoid to open and close files at each logging event.
-    QFile targetFile(logdir->filePath(nameOfValue + ".csv"));
-    if (!targetFile.open(QIODevice::Append))
+    if(loggerIsActive)
     {
-        qWarning("Cannot create the file %s", targetFile.fileName().toLocal8Bit().constData());
+	qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
+	
+	// TODO: Avoid to open and close files at each logging event.
+	QFile targetFile(logdir->filePath(nameOfValue + ".csv"));
+	if (!targetFile.open(QIODevice::Append))
+	{
+	    qWarning("Cannot create the file %s", targetFile.fileName().toLocal8Bit().constData());
+	}
+	QTextStream targetStream(&targetFile);
+	targetStream << epochTimeStamp << " " << value << endl;
+	targetFile.close();
     }
-    QTextStream targetStream(&targetFile);
-    targetStream << epochTimeStamp << " " << value << endl;
-    targetFile.close();
-    
 }
 
 void LoggerModule::logString(const QString nameOfValue, char* value)
 {
-    qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
-    
-    // TODO: Avoid to open and close files at each logging event.
-    QFile targetFile(logdir->filePath(nameOfValue + ".csv"));
-    if (!targetFile.open(QIODevice::Append))
+    if(loggerIsActive)
     {
-        qWarning("Cannot create the file %s", targetFile.fileName().toLocal8Bit().constData());
+	qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
+	
+	// TODO: Avoid to open and close files at each logging event.
+	QFile targetFile(logdir->filePath(nameOfValue + ".csv"));
+	if (!targetFile.open(QIODevice::Append))
+	{
+	    qWarning("Cannot create the file %s", targetFile.fileName().toLocal8Bit().constData());
+	}
+	QTextStream targetStream(&targetFile);
+	targetStream << epochTimeStamp << " " << value << endl;
+	targetFile.close();
     }
-    QTextStream targetStream(&targetFile);
-    targetStream << epochTimeStamp << " " << value << endl;
-    targetFile.close();
-    
 }
 
