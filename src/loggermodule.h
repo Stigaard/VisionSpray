@@ -32,7 +32,7 @@ class LoggerModule : public QThread
 public:
     LoggerModule(const QString pathToLog, const QString lognamePostString);
     void run();
-    void logInt(int value, const QString nameOfValue);
+    void logInt(const QString nameOfValue, int value);
 public slots:
 private slots:
     void flushLogs(void);

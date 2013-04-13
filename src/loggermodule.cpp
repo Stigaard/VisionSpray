@@ -79,7 +79,7 @@ void LoggerModule::flushLogs(void )
 //    this->Valve1File->flush();
 }
 
-void LoggerModule::logInt(int value, const QString nameOfValue)
+void LoggerModule::logInt(const QString nameOfValue, int value)
 {
     qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
     
