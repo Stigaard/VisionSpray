@@ -10,19 +10,19 @@ VisionSpray::VisionSpray()
 {
     LoggerModule* tempLogger = new LoggerModule("../LoggerModule/", "Testing");
     
-    tempLogger->logInt("first val", 42);
-    tempLogger->logInt("first val", 43);
+    tempLogger->log("first val", 42);
+    tempLogger->log("first val", 43);
 
     LoggerModule* tempLogger2 = new LoggerModule("../LoggerModule/", "TestingTwo");
     
 //    tempLogger2->logString("point 1", "progress");
-    tempLogger2->logInt("first val", 42);
+    tempLogger2->log("first val", 42);
     tempLogger2->deactivate();
 //    tempLogger2->logString("point 2", "progress");
-    tempLogger2->logInt("first val", 43);
-    tempLogger2->logInt("second val", 3);
+    tempLogger2->log("first val", 43);
+    tempLogger2->log("second val", 3);
     tempLogger2->activate();
-    tempLogger2->logString("second val", "string testing");
+    tempLogger2->log("second val", "string testing");
     
     exit(0);
   

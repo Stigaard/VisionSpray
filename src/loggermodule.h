@@ -34,8 +34,8 @@ public:
     void run();
     void activate();
     void deactivate();
-    void logInt(const QString nameOfValue, int value);
-    void logString(const QString nameOfValue, char* value);
+    void log(const QString nameOfValue, int value);
+    void log(const QString nameOfValue, char* value);
 public slots:
 private slots:
     void flushLogs(void);

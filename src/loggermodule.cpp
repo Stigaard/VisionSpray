@@ -55,6 +55,7 @@ void LoggerModule::createBaseLogDirectory(const QString pathToLog, const QString
     templogdir->mkdir(dateTimeString + lognamePostString);
     templogdir->cd(dateTimeString + lognamePostString);
     // Write directory where the log files are stored.
+    std::cout << "Log files can be found in this directory." << std::endl;
     std::cout << templogdir->absolutePath().toStdString() << std::endl;
 
     baseDirectory = new QDir(templogdir->absolutePath());
@@ -90,7 +91,7 @@ void LoggerModule::flushLogs(void )
 //    this->Valve1File->flush();
 }
 
-void LoggerModule::logInt(const QString nameOfValue, int value)
+void LoggerModule::log(const QString nameOfValue, int value)
 {
     if(loggerIsActive)
     {
@@ -108,7 +109,7 @@ void LoggerModule::logInt(const QString nameOfValue, int value)
     }
 }
 
-void LoggerModule::logString(const QString nameOfValue, char* value)
+void LoggerModule::log(const QString nameOfValue, char* value)
 {
     if(loggerIsActive)
     {
