@@ -22,15 +22,6 @@ VisionSpray::VisionSpray()
     tempLogger2->logInt("second val", 3);
     tempLogger2->logString("second val", "string testing");
     
-    for(int k = 0; k < 100; k++)
-    {
-	for (int i = 0; i < 10000; i++)
-	{
-	 
-	}
-	tempLogger2->logInt("first val", k);
-    }
-
     exit(0);
   
     qRegisterMetaType< cv::Mat >("cv::Mat");
