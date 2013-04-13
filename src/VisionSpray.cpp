@@ -20,6 +20,7 @@ VisionSpray::VisionSpray()
 //    tempLogger2->logString("point 2", "progress");
     tempLogger2->logInt("first val", 43);
     tempLogger2->logInt("second val", 3);
+    tempLogger2->logString("second val", "string testing");
     
     for(int k = 0; k < 100; k++)
     {

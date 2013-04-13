@@ -95,3 +95,19 @@ void LoggerModule::logInt(const QString nameOfValue, int value)
     
 }
 
+void LoggerModule::logString(const QString nameOfValue, char* value)
+{
+    qint64 epochTimeStamp = QDateTime::currentMSecsSinceEpoch();
+    
+    // TODO: Avoid to open and close files at each logging event.
+    QFile targetFile(logdir->filePath(nameOfValue + ".csv"));
+    if (!targetFile.open(QIODevice::Append))
+    {
+        qWarning("Cannot create the file %s", targetFile.fileName().toLocal8Bit().constData());
+    }
+    QTextStream targetStream(&targetFile);
+    targetStream << epochTimeStamp << " " << value << endl;
+    targetFile.close();
+    
+}
+
