@@ -54,3 +54,7 @@ mem.log.*
 massif.*
 callgrind.*
 perf.data*
+
+# Directories for logging
+LoggerModule
+VisionSprayDataLog
