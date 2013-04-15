@@ -26,7 +26,6 @@ VisionSpray::VisionSpray()
     #ifdef USE_CAMERA
     connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
 //    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
-//    connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*)));
     #endif
 #endif
 
