@@ -12,6 +12,7 @@ VisionSpray::VisionSpray()
 #ifdef USE_CAMERA
     this->cameraOne = new QTGIGE("Basler-21325585");
     //this->cameraTwo = new QTGIGE("Basler-21322519");
+    this->cameraOne->setROI(500, 500, 500, 500);
     this->cameraOne->startAquisition();
     //this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
