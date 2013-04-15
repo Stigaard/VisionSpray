@@ -43,7 +43,10 @@ public slots:
 #endif
 #ifdef USE_CAMERA
     void rawImageLogger(void* img);
+    void pngImageLoggerCameraOne(cv::Mat image);
+    void pngImageLoggerCameraTwo(cv::Mat image);
     void pngImageLogger(cv::Mat image);
+    void pngImageLogger(cv::Mat image, QString cameraName);
 #endif
 
     void valve1Logger(int decision);

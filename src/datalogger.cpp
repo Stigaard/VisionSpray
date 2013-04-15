@@ -173,14 +173,31 @@ void dataLogger::initCamera(void )
 }
 
 
+void dataLogger::pngImageLoggerCameraOne(cv::Mat image)
+{
+    std::cout << "Image from camera one" << std::endl;
+    pngImageLogger(image, "cameraOne");
+}
+
+void dataLogger::pngImageLoggerCameraTwo(cv::Mat image)
+{
+    std::cout << "Image from camera two" << std::endl;
+    pngImageLogger(image, "cameraTwo");
+}
 
 void dataLogger::pngImageLogger(cv::Mat image)
+{
+  pngImageLogger(image, "");
+}
+
+void dataLogger::pngImageLogger(cv::Mat image, QString cameraName)
 {
     std::vector<int> compression_params;
     compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(0);
+    QString targetFilename = QString::number(QDateTime::currentMSecsSinceEpoch()) + cameraName + ".png";
 
-    cv::imwrite(pngImageDir->filePath(QString::number(QDateTime::currentMSecsSinceEpoch()) + ".png").toStdString(), image, compression_params);
+    cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), image, compression_params);
 }
 
 void dataLogger::rawImageLogger(void* img)
