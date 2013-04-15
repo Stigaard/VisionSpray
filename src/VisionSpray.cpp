@@ -11,13 +11,14 @@ VisionSpray::VisionSpray()
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
     this->cameraOne = new QTGIGE("Basler-21325585");
-    //this->cameraTwo = new QTGIGE("Basler-21322519");
-    this->cameraOne->setROI(500, 500, 500, 500);
+    this->cameraTwo = new QTGIGE("Basler-21322519");
+    this->cameraOne->setROI(0, 0, 500, 500);
+    this->cameraTwo->setROI(0, 0, 500, 500);
     this->cameraOne->startAquisition();
-    //this->cameraTwo->startAquisition();
+    this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
     connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)));
-    //connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
+    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
 #endif
 
 #ifdef USE_DATALOGGER
@@ -25,7 +26,7 @@ VisionSpray::VisionSpray()
     this->log = new dataLogger("../VisionSprayDataLog/", " VisionSpray log");
     #ifdef USE_CAMERA
     connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
-//    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
+    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
     #endif
 #endif
 
