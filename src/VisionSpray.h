@@ -40,7 +40,9 @@ public:
     VisionSpray();
     virtual ~VisionSpray();
 #ifdef USE_CAMERA
-    QTGIGE * camera;
+    //QTGIGE * camera;
+    QTGIGE * cameraOne;
+    QTGIGE * cameraTwo;
 #endif
 private:
  //   algoritm * modi;
@@ -55,7 +57,8 @@ private:
     QWidget *sideWidget;
     QComboBox *imageSelect;
     QLabel * modicoviText;
-    demosaic_cv dem;
+    demosaic_cv demOne;
+    demosaic_cv demTwo;
 #ifndef USE_CAMERA
     void init_CameraSimulator(void);
     QFileInfoList * simulationFiles;

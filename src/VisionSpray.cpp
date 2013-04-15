@@ -15,24 +15,26 @@ VisionSpray::VisionSpray()
 
     LoggerModule* tempLogger2 = new LoggerModule("../LoggerModule/", "TestingTwo");
     
-//    tempLogger2->logString("point 1", "progress");
     tempLogger2->log("first val", 42);
     tempLogger2->deactivate();
-//    tempLogger2->logString("point 2", "progress");
     tempLogger2->log("first val", 43);
     tempLogger2->log("second val", 3);
     tempLogger2->activate();
     tempLogger2->log("second val", "string testing");
     
-    exit(0);
+    //exit(0);
   
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
     //this->camera = new QTGIGE(0);
     //this->camera = new QTGIGE("Basler-21322519");
-    this->camera = new QTGIGE("Basler-21325585");
-    this->camera->startAquisition();
-    connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat)), &dem, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
+    this->cameraOne = new QTGIGE("Basler-21325585");
+    this->cameraTwo = new QTGIGE("Basler-21322519");
+    this->cameraOne->startAquisition();
+    this->cameraTwo->startAquisition();
+//    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
+    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)));
+    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
 #endif
 
 #ifdef USE_GPS
@@ -46,9 +48,10 @@ VisionSpray::VisionSpray()
 //     connect(this->modi, SIGNAL(weedAmount(float)), this->log, SLOT(weedAmountLogger(float)));
 //     connect(this->modi, SIGNAL(weedPressure(float)), this->log, SLOT(weedPressureLogger(float)));
 //     connect(this->modi, SIGNAL(runtime(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)),
-// 	    this->log, SLOT(runtimeLogger(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)));
+// 	    this->log, SLOT(runtimeLogger(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qi	nt64,qint64,qint64)));
     #ifdef USE_CAMERA
-    connect(&dem, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLogger(cv::Mat)));
+//    connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
+//    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
 //    connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*)));
     #endif
 
@@ -61,7 +64,7 @@ VisionSpray::VisionSpray()
 #endif
 
     drawGui();
-    connect(&dem, SIGNAL(newImage(cv::Mat)), view, SLOT(showImage(cv::Mat)));
+    connect(&demOne, SIGNAL(newImage(cv::Mat)), view, SLOT(showImage(cv::Mat)));
 
 #ifndef USE_CAMERA
     init_CameraSimulator();
@@ -83,7 +86,7 @@ VisionSpray::VisionSpray()
 //     connect(modi, SIGNAL(nozzleOn()), this, SLOT(turnValve1On()));
 //     connect(modi, SIGNAL(nozzleOff()), this, SLOT(turnValve1Off()));
 //     connect(modi, SIGNAL(statusText(QString)), this->modicoviText, SLOT(setText(QString)));
-    connect(cameraSettingsBtn, SIGNAL(pressed()), camera, SLOT(showCameraSettings()));
+    connect(cameraSettingsBtn, SIGNAL(pressed()), cameraOne, SLOT(showCameraSettings()));
 }
 
 #ifndef USE_CAMERA
