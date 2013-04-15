@@ -8,58 +8,24 @@
 
 VisionSpray::VisionSpray()
 {
-    LoggerModule* tempLogger = new LoggerModule("../LoggerModule/", "Testing");
-    
-    tempLogger->log("first val", 42);
-    tempLogger->log("first val", 43);
-
-    LoggerModule* tempLogger2 = new LoggerModule("../LoggerModule/", "TestingTwo");
-    
-    tempLogger2->log("first val", 42);
-    tempLogger2->deactivate();
-    tempLogger2->log("first val", 43);
-    tempLogger2->log("second val", 3);
-    tempLogger2->activate();
-    tempLogger2->log("second val", "string testing");
-    
-    //exit(0);
-  
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
-    //this->camera = new QTGIGE(0);
-    //this->camera = new QTGIGE("Basler-21322519");
     this->cameraOne = new QTGIGE("Basler-21325585");
-    this->cameraTwo = new QTGIGE("Basler-21322519");
+    //this->cameraTwo = new QTGIGE("Basler-21322519");
     this->cameraOne->startAquisition();
-    this->cameraTwo->startAquisition();
+    //this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
     connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)));
-    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
-#endif
-
-#ifdef USE_GPS
-    this->loadGPS();
+    //connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
 #endif
 
 #ifdef USE_DATALOGGER
     std::cout << "Logger activated" << std::endl;
     this->log = new dataLogger("../VisionSprayDataLog/", " VisionSpray log");
-//     connect(this->modi->timeKeeper, SIGNAL(spray(int)), this->log, SLOT(valve1Logger(int)));
-//     connect(this->modi, SIGNAL(weedAmount(float)), this->log, SLOT(weedAmountLogger(float)));
-//     connect(this->modi, SIGNAL(weedPressure(float)), this->log, SLOT(weedPressureLogger(float)));
-//     connect(this->modi, SIGNAL(runtime(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64)),
-// 	    this->log, SLOT(runtimeLogger(qint64,qint64,qint64,qint64,qint64,qint64,qint64,qint64,qi	nt64,qint64,qint64)));
     #ifdef USE_CAMERA
-//    connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
+    connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
 //    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
 //    connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->log, SLOT(pngImageLogger(cv::Mat*)));
-    #endif
-
-    #ifdef USE_GPS
-    //       connect(this->gps, SIGNAL(newGGA(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)),
-    // 	      this->log, SLOT(GGALogger(QByteArray,QByteArray,char,QByteArray,char,int,int,float,float,char,QByteArray,char,float,int)));
-    //       connect(this->gps, SIGNAL(newNMEASentence(QByteArray,QByteArray,QList<QByteArray>)),
-    // 	      this->log, SLOT(NMEALogger(QByteArray,QByteArray,QList<QByteArray>)));
     #endif
 #endif
 
@@ -78,14 +44,6 @@ VisionSpray::VisionSpray()
 
 
 
-//   connect(this->modi, SIGNAL(showImage(cv::Mat*)), this->view, SLOT(showImage(cv::Mat*)));
-//     connect(Valve1Btn, SIGNAL(pressed()), this, SLOT(turnValve1On()));
-//     connect(Valve1Btn, SIGNAL(released()), this, SLOT(turnValve1Off()));
-//     connect(Valve1Btn, SIGNAL(pressed()), this, SLOT(turnValve2On()));
-//     connect(Valve1Btn, SIGNAL(released()), this, SLOT(turnValve2Off()));
-//     connect(modi, SIGNAL(nozzleOn()), this, SLOT(turnValve1On()));
-//     connect(modi, SIGNAL(nozzleOff()), this, SLOT(turnValve1Off()));
-//     connect(modi, SIGNAL(statusText(QString)), this->modicoviText, SLOT(setText(QString)));
     connect(cameraSettingsBtn, SIGNAL(pressed()), cameraOne, SLOT(showCameraSettings()));
 }
 
