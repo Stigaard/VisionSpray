@@ -28,7 +28,9 @@ VisionSpray::VisionSpray()
   
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
-    this->camera = new QTGIGE("21272795");
+    //this->camera = new QTGIGE(0);
+    //this->camera = new QTGIGE("Basler-21322519");
+    this->camera = new QTGIGE("Basler-21325585");
     this->camera->startAquisition();
     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat)), &dem, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
 #endif
