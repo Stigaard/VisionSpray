@@ -12,6 +12,8 @@ set(USE_DATALOGGER 0) #If compiling with datalogging
 set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
 
+set(CMAKE_BUILD_TYPE Debug)
+
 #Performance tuning
 if(PROFILE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -march=native")
