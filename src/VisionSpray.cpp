@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QTimer>
 
+
 VisionSpray::VisionSpray()
 {
        qRegisterMetaType< cv::Mat >("cv::Mat"); 
@@ -41,7 +42,9 @@ VisionSpray::VisionSpray()
 #endif
       
     drawGui();   
-    connect(&exg, SIGNAL(newImage(cv::Mat)), view, SLOT(showImage(cv::Mat)));
+    //connect(&exg, SIGNAL(newImage(cv::Mat)), view, SLOT(showImage(cv::Mat)));
+    connect(&exg, SIGNAL(newImage(cv::Mat)), &m_rowDetect, SLOT(analyze(cv::Mat)));
+    connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat)),view,SLOT(showImage(cv::Mat)));
      
 #ifndef USE_CAMERA
     init_CameraSimulator();

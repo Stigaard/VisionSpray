@@ -11,6 +11,7 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
 #include <QDir>    
+#include <rowdetect.h>
 
 //#include "algoritm.h"
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
@@ -57,6 +58,7 @@ private:
     QLabel * modicoviText;
     demosaic_cv dem;
     ExG_cv exg;
+    RowDetect m_rowDetect;
 #ifndef USE_CAMERA
     void init_CameraSimulator(void);
     QFileInfoList * simulationFiles;

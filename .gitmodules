@@ -13,3 +13,6 @@
 [submodule "include/modicovi-rt"]
 	path = include/modicovi-rt
 	url = git@bitbucket.org:Stigaard/modicovi-rt.git
+[submodule "include/RowDetect"]
+	path = include/RowDetect
+	url = git@bitbucket.org:thgis/rowdetect.git

@@ -54,3 +54,22 @@ add_executable(VisionSpray ${VisionSpray_SRCS} )
 target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
 		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget ${qextserialport_LIBRARY})
+target_link_libraries(VisionSpray RowDetect)
+#include(ExternalProject)
+#message("${CMAKE_COMMAND}")
+#ExternalProject_Add( # not finish
+#    RowDetect
+#    PREFIX /home/thomas/Ph.D/cppworkspace/RowDetect
+#    SOURCE_DIR = <PREFIX>
+    #BUILD_IN_SOURCE 1
+
+
+    #BINARY_DIR = <PREFIX>/build
+#    CONFIGURE_COMMAND ${QT_QMAKE_EXECUTABLE}
+    #BUILD_COMMAND make
+    #INSTALL_COMMAND make install
+#)
+
+
+
+

@@ -4,6 +4,7 @@ endif(USE_RS232)
 add_subdirectory(qOpenGLCVWidget)
 add_subdirectory(QtGigE)
 add_subdirectory(qtgpscWidget)
+add_subdirectory(RowDetect)
 #add_subdirectory(modicovi-rt)
 
 #qextserialport
