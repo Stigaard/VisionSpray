@@ -12,9 +12,9 @@ VisionSpray::VisionSpray()
        qRegisterMetaType< cv::Mat >("cv::Mat"); 
 //    modi = new algoritm();
 #ifdef USE_CAMERA
-       this->camera = new QTGIGE("21272795");
+       this->camera = new QTGIGE("Basler-21272795");
      this->camera->startAquisition();
-    connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat)), &exg, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
+    connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
 #endif
     
   #ifdef USE_GPS

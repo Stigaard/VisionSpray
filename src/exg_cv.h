@@ -34,12 +34,13 @@ public:
     void run();
   static void BayerGR16ToExG(cv::InputArray in, cv::OutputArray out);
 public slots:
-  void newBayerGRImage(cv::Mat img);
+  void newBayerGRImage(cv::Mat img, qint64 timestampus);
 signals:
-  void newImage(cv::Mat img);
+  void newImage(cv::Mat img, qint64 timestampus);
 private:
   QSemaphore semImg;
   QQueue<cv::Mat> Imgs;
+  QQueue<qint64> timestamps;
   bool updateptimer;
   bool abort;
 };
