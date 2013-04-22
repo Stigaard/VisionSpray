@@ -15,9 +15,9 @@ VisionSpray::VisionSpray()
     this->cameraOne->setROI(0, 0, 200, 200);
     this->cameraTwo->setROI(0, 0, 200, 200);
     this->cameraOne->writeBool("AcquisitionFrameRateEnable", true);
-    this->cameraOne->writeFloat("AcquisitionFrameRateAbs", 20.0);
+    this->cameraOne->writeFloat("AcquisitionFrameRateAbs", 0.5);
     this->cameraTwo->writeBool("AcquisitionFrameRateEnable", true);
-    this->cameraTwo->writeFloat("AcquisitionFrameRateAbs", 20.0);
+    this->cameraTwo->writeFloat("AcquisitionFrameRateAbs", 0.5);
     this->cameraOne->startAquisition();
     this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
