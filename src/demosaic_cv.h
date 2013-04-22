@@ -36,7 +36,7 @@ public:
   void run();
   void setptimer(itimerval timer);
 public slots:
-  void newBayerGRImage(cv::Mat img);
+  void newBayerGRImage(cv::Mat img, qint64 timestamp);
 signals:
   void newImage(cv::Mat img);
 private:

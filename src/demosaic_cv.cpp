@@ -79,7 +79,7 @@ void demosaic_cv::run()
   }
 }
 
-void demosaic_cv::newBayerGRImage(cv::Mat img)
+void demosaic_cv::newBayerGRImage(cv::Mat img, qint64 timestamp)
 {
   Imgs.enqueue(img);
   semImg.release(1);
