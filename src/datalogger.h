@@ -49,6 +49,7 @@ public slots:
     void pngImageLogger(cv::Mat image);
     void pngImageLogger(cv::Mat image, QString cameraName);
     void burstImageLogger(cv::Mat image);
+    void saveImageBurst(void);
 #endif
 
     void valve1Logger(int decision);
@@ -63,7 +64,7 @@ public slots:
 private slots:
     void flushLogs(void);
 private:
-
+    bool burstLoggerIsActive;
     QDir * logdir;
     QFile * Valve1File;
     QTextStream * Valve1Stream;

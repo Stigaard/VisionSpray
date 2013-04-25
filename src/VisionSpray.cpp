@@ -50,6 +50,7 @@ VisionSpray::VisionSpray()
 
 
     connect(cameraSettingsBtn, SIGNAL(pressed()), cameraOne, SLOT(showCameraSettings()));
+    connect(Valve1Btn, SIGNAL(pressed()), this->log, SLOT(saveImageBurst()));
 }
 
 #ifndef USE_CAMERA

@@ -47,6 +47,8 @@ dataLogger::dataLogger(const QString pathToLog, const QString lognamePostString)
     this->initWeedPressure();
     this->initWeedAmount();
     this->initRuntime();
+    
+    burstLoggerIsActive = true;
 }
 
 void dataLogger::run()
@@ -202,30 +204,32 @@ void dataLogger::pngImageLogger(cv::Mat image, QString cameraName)
 
 void dataLogger::burstImageLogger(cv::Mat image)
 {
-    int maxNumberOfImages = 200;
+    int maxNumberOfImages = 100;
+    if(!burstLoggerIsActive)
+	return;
+    listOfImages.push_back(image);
     if(listOfImages.size() > maxNumberOfImages)
     {
-	std::cout << "buffer full, writing images to disc" << std::endl;
-	int count = 0;
-	// Save images to disk.
-	while (!listOfImages.empty())
-	{
-	    std::vector<int> compression_params;
-	    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-	    compression_params.push_back(0);
-	    QString targetFilename = QString::number(count) + ".png";
-	    count++;
-	    cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), listOfImages.front(), compression_params);
-	    listOfImages.pop_front();
-	}
+	listOfImages.pop_front();
     }
-    else
+}
+
+
+void dataLogger::saveImageBurst(void)
+{
+    burstLoggerIsActive = false;
+    int count = 0;
+    while (!listOfImages.empty())
     {
-	// TODO:
-	// Take care of multiple threads. Morten mentioned that it could be a problem.
-	listOfImages.push_back(image);
-	std::cout << "got image" << std::endl;
+	std::vector<int> compression_params;
+	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+	compression_params.push_back(0);
+	QString targetFilename = QString::number(count) + ".png";
+	count++;
+	cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), listOfImages.front(), compression_params);
+	listOfImages.pop_front();
     }
+    burstLoggerIsActive = true;
 }
 
 void dataLogger::rawImageLogger(void* img)
