@@ -25,6 +25,7 @@
 #include <qt4/QtCore/QFile>
 #include <qt4/QtCore/QDir>
 #include <qt4/QtCore/QTextStream>
+#include <deque>
 
 class dataLogger : public QThread
 {
@@ -47,6 +48,7 @@ public slots:
     void pngImageLoggerCameraTwo(cv::Mat image);
     void pngImageLogger(cv::Mat image);
     void pngImageLogger(cv::Mat image, QString cameraName);
+    void burstImageLogger(cv::Mat image);
 #endif
 
     void valve1Logger(int decision);
@@ -83,6 +85,7 @@ private:
     void initCamera(void);
     QDir * rawImageDir;
     QDir * pngImageDir;
+    std::deque<cv::Mat> listOfImages;
 #endif
 
 #ifdef USE_GPS

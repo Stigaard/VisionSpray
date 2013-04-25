@@ -200,6 +200,34 @@ void dataLogger::pngImageLogger(cv::Mat image, QString cameraName)
     cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), image, compression_params);
 }
 
+void dataLogger::burstImageLogger(cv::Mat image)
+{
+    int maxNumberOfImages = 200;
+    if(listOfImages.size() > maxNumberOfImages)
+    {
+	std::cout << "buffer full, writing images to disc" << std::endl;
+	int count = 0;
+	// Save images to disk.
+	while (!listOfImages.empty())
+	{
+	    std::vector<int> compression_params;
+	    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+	    compression_params.push_back(0);
+	    QString targetFilename = QString::number(count) + ".png";
+	    count++;
+	    cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), listOfImages.front(), compression_params);
+	    listOfImages.pop_front();
+	}
+    }
+    else
+    {
+	// TODO:
+	// Take care of multiple threads. Morten mentioned that it could be a problem.
+	listOfImages.push_back(image);
+	std::cout << "got image" << std::endl;
+    }
+}
+
 void dataLogger::rawImageLogger(void* img)
 {
     QFile imageFile(rawImageDir->filePath(QString::number(QDateTime::currentMSecsSinceEpoch()) + ".raw"));
