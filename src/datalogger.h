@@ -87,6 +87,7 @@ private:
     QDir * rawImageDir;
     QDir * pngImageDir;
     std::deque<cv::Mat> listOfImages;
+    std::deque<uint64> listOfTimeStamps;
 #endif
 
 #ifdef USE_GPS

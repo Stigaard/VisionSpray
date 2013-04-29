@@ -208,9 +208,12 @@ void dataLogger::burstImageLogger(cv::Mat image)
     if(!burstLoggerIsActive)
 	return;
     listOfImages.push_back(image);
+    uint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    listOfTimeStamps.push_back(currentTime);
     if(listOfImages.size() > maxNumberOfImages)
     {
 	listOfImages.pop_front();
+	listOfTimeStamps.pop_front();
     }
 }
 
@@ -224,10 +227,12 @@ void dataLogger::saveImageBurst(void)
 	std::vector<int> compression_params;
 	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
 	compression_params.push_back(0);
-	QString targetFilename = QString::number(count) + ".png";
+	QString targetFilename = QString::number(listOfTimeStamps.front()) + ".png";
 	count++;
-	cv::imwrite(pngImageDir->filePath(targetFilename).toStdString(), listOfImages.front(), compression_params);
+	std::string pathToFile = pngImageDir->filePath(targetFilename).toStdString();
+	cv::imwrite(pathToFile, listOfImages.front(), compression_params);
 	listOfImages.pop_front();
+	listOfTimeStamps.pop_front();
     }
     burstLoggerIsActive = true;
 }
