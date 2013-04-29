@@ -12,25 +12,27 @@ VisionSpray::VisionSpray()
 #ifdef USE_CAMERA
     this->cameraOne = new QTGIGE("Basler-21325585");
     this->cameraTwo = new QTGIGE("Basler-21322519");
-    this->cameraOne->setROI(0, 0, 200, 200);
-    this->cameraTwo->setROI(0, 0, 200, 200);
+    this->cameraOne->setROI(500, 0, 1000, 1000);
+//     this->cameraTwo->setROI(0, 0, 1000, 1000);
     this->cameraOne->writeBool("AcquisitionFrameRateEnable", true);
-    this->cameraOne->writeFloat("AcquisitionFrameRateAbs", 0.5);
-    this->cameraTwo->writeBool("AcquisitionFrameRateEnable", true);
-    this->cameraTwo->writeFloat("AcquisitionFrameRateAbs", 0.5);
+    this->cameraOne->writeFloat("AcquisitionFrameRateAbs", 20);
+    this->cameraOne->writeInt("ExposureTimeRaw", 10000);
+//     this->cameraTwo->writeBool("AcquisitionFrameRateEnable", true);
+//     this->cameraTwo->writeFloat("AcquisitionFrameRateAbs", 5);
     this->cameraOne->startAquisition();
-    this->cameraTwo->startAquisition();
+//     this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
-    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)));
-    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat)), &demTwo, SLOT(newBayerGRImage(cv::Mat)));
+    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demOne, SLOT(newBayerGRImage(cv::Mat, qint64)));
+    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demTwo, SLOT(newBayerGRImage(cv::Mat, qint64)));
 #endif
 
 #ifdef USE_DATALOGGER
     std::cout << "Logger activated" << std::endl;
     this->log = new dataLogger("../VisionSprayDataLog/", " VisionSpray log");
     #ifdef USE_CAMERA
-    connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
-    connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
+    connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(burstImageLogger(cv::Mat)));
+//     connect(&demOne, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraOne(cv::Mat)));
+//     connect(&demTwo, SIGNAL(newImage(cv::Mat)), this->log, SLOT(pngImageLoggerCameraTwo(cv::Mat)));
     #endif
 #endif
 
@@ -87,6 +89,7 @@ void VisionSpray::drawGui(void )
     this->globalWidget = new QWidget(this);
     this->Layout = new QGridLayout(this->globalWidget);
     this->view = new CQtOpenCVViewerGl(this);
+//     this->AcquireBurstSequence = new QPushButton("Acquire burst sequence");
     this->Valve1Btn = new QPushButton("Valve 1");
     this->Valve2Btn = new QPushButton("Valve 2");
     this->cameraSettingsBtn = new QPushButton("Camera settings");

@@ -108,6 +108,7 @@ signals:
 signals:
     void newSimulatedImage( cv::Mat *image );
 #endif
+ 
 };
 
 #endif // VisionSpray_H
