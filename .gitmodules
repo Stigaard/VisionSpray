@@ -16,3 +16,6 @@
 [submodule "include/RowDetect"]
 	path = include/RowDetect
 	url = git@bitbucket.org:thgis/rowdetect.git
+[submodule "sprayplanner"]
+	path = include/SprayPlanner
+	url = ssh://git@bitbucket.org/thgis/sprayplanner.git
