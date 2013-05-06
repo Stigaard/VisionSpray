@@ -18,14 +18,11 @@
 #include "armadillointerface.h"
 #include "../include/BayerExG/exg_cv.h"
 #ifdef USE_GPS
-  #include "gpsreader.h"
+  #include "../include/gpsReader/gpsreader.h"
   #include "../include/qtgpscWidget/gpswidget.h"
 #endif
 
-#ifdef USE_CAMERA
-  #pragma message "Using a camera"
-  #include "../include/QtGigE/qtgige.h"
-#endif
+#include "../include/QtGigE/qtgige.h"
 
 #ifdef USE_DATALOGGER
   #include "datalogger.h"
@@ -37,9 +34,7 @@ Q_OBJECT
 public:
     VisionSpray();
     virtual ~VisionSpray();
-#ifdef USE_CAMERA
     QTGIGE * camera;
-#endif
 private:
     armadilloInterface armadillo;
     QPushButton * Valve1Btn;
