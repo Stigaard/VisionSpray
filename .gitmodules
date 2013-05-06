@@ -19,3 +19,6 @@
 [submodule "include/gpsReader"]
 	path = include/gpsReader
 	url = git@github.com:Stigaard/gpsReader.git
+[submodule "include/qtRosBridge"]
+	path = include/qtRosBridge
+	url = git@github.com:Stigaard/qtRosBridge.git

@@ -6,6 +6,7 @@ add_subdirectory(QtGigE)
 add_subdirectory(qtgpscWidget)
 add_subdirectory(BayerExG)
 add_subdirectory(gpsReader)
+add_subdirectory(qtRosBridge)
 #add_subdirectory(modicovi-rt)
 
 #qextserialport

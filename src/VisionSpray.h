@@ -11,9 +11,11 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
 #include <QDir>    
+#include <QSettings>
 
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
 #include "demosaic_cv.h"
+#include "armadillointerface.h"
 #include "../include/BayerExG/exg_cv.h"
 #ifdef USE_GPS
   #include "gpsreader.h"
@@ -39,6 +41,7 @@ public:
     QTGIGE * camera;
 #endif
 private:
+    armadilloInterface armadillo;
     QPushButton * Valve1Btn;
     QPushButton * Valve2Btn;
     QPushButton * cameraSettingsBtn;
@@ -52,6 +55,7 @@ private:
     QLabel * modicoviText;
     demosaic_cv dem;
     ExG_cv exg;
+    QSettings settings;
     
 #ifdef USE_GPS
     void loadGPS(void);
