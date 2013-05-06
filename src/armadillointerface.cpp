@@ -81,5 +81,5 @@ void armadilloInterface::msgFromRosReceiver(QVariant msg)
 //    qDebug() << "Velocity: " << vel;
     emit(forwardVelocity(vel));
   }
-  qDebug() << flush;
+//  qDebug() << flush;
 }
