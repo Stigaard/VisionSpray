@@ -10,3 +10,6 @@
 [submodule "include/qtgpscWidget"]
 	path = include/qtgpscWidget
 	url = git@github.com:Stigaard/qtgpscWidget.git
+[submodule "include/LoggerModule"]
+	path = include/LoggerModule
+	url = git@github.com:henrikmidtiby/LoggerModule.git

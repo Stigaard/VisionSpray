@@ -4,6 +4,7 @@ endif(USE_RS232)
 add_subdirectory(qOpenGLCVWidget)
 add_subdirectory(QtGigE)
 add_subdirectory(qtgpscWidget)
+add_subdirectory(LoggerModule)
 
 #qextserialport
 set(qextserialport_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/qextserialport/libqextserialport.a PARENT_SCOPE)
