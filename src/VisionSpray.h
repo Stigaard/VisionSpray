@@ -12,12 +12,16 @@
 #include <QtGui/QRadioButton>
 #include <QDir>    
 #include <rowdetect.h>
+#include <QSettings>
 
-//#include "algoritm.h"
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
 #include "demosaic_cv.h"
+#include "armadillointerface.h"
+#include "../include/BayerExG/exg_cv.h"
 #include "exg_cv.h"
 #ifdef USE_GPS
+  #include "../include/gpsReader/gpsreader.h"
+  #include "../include/qtgpscWidget/gpswidget.h"
   #include "gpsreader.h"
   #include "../include/qtgpscWidget/satview.h"
   #include "../include/qtgpscWidget/sattellite.h"
@@ -44,7 +48,7 @@ public:
     QTGIGE * camera;
 #endif
 private:
- //   algoritm * modi;
+    armadilloInterface armadillo;
     QPushButton * Valve1Btn;
     QPushButton * Valve2Btn;
     QPushButton * cameraSettingsBtn;
@@ -58,6 +62,7 @@ private:
     QLabel * modicoviText;
     demosaic_cv dem;
     ExG_cv exg;
+    QSettings settings;
     RowDetect m_rowDetect;
 #ifndef USE_CAMERA
     void init_CameraSimulator(void);
@@ -72,14 +77,7 @@ private:
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
-    QWidget *gpsWidget;
-    SatView *satWidget;
-    QButtonGroup *gpsQuality;
-    QRadioButton *gpsQualityInvalid, *gpsQualityGPSFix, *gpsQualityDGPSFix, *gpsQualityPPSFix,
-                 *gpsQualityRTKFix, *gpsQualityFRTKFix, *gpsQualityEstimated, *gpsQualityManual,
-                 *gpsQualitySimulation;
-    QGridLayout *gpsLayout;
-    void drawGPSGui(void);
+    gpsWidget *gpswidget;
 #endif
 private slots:
     void turnValve1On(void);

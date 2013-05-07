@@ -6,6 +6,8 @@ find_package(OpenCV REQUIRED)
 find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
 set(EMULATE_CAMERA 1)
+set(EMULATE_ARMADILLO 0)
+
 set(USE_CAMERA 1) #If compiling for using a camera
 set(USE_GPS 0) #If compiling for using a GPS
 set(USE_DATALOGGER 0) #If compiling with datalogging
@@ -21,10 +23,17 @@ if(PROFILE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif(PROFILE)
 
+if(USE_GPS)
+  add_definitions(-DUSE_GPS)
+endif(USE_GPS)
+
 if(EMULATE_CAMERA)
   add_definitions(-DEMULATE_CAMERA)
 endif(EMULATE_CAMERA)
 
+if(EMULATE_ARMADILLO)
+  add_definitions(-DEMULATE_ARMADILLO)
+endif(EMULATE_ARMADILLO)
 if(USE_CAMERA) #If for camera usage
 #  set(CAMERA_SRCS jai_ad-080ge.cc) #Compile the camera interface
   add_definitions(-DUSE_CAMERA) #Add a preprocessor define for in_code checks for camera usage
@@ -53,7 +62,7 @@ add_definitions(${QT_DEFINITIONS})
 add_executable(VisionSpray ${VisionSpray_SRCS} )
 target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
-		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget ${qextserialport_LIBRARY})
+		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget BayerExG gpsReader qtRosBridge ${qextserialport_LIBRARY})
 target_link_libraries(VisionSpray RowDetect)
 #include(ExternalProject)
 #message("${CMAKE_COMMAND}")

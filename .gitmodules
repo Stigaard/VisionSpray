@@ -19,3 +19,6 @@
 [submodule "sprayplanner"]
 	path = include/SprayPlanner
 	url = ssh://git@bitbucket.org/thgis/sprayplanner.git
+[submodule "include/qtRosBridge"]
+	path = include/qtRosBridge
+	url = git@github.com:Stigaard/qtRosBridge.git
