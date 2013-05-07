@@ -10,8 +10,9 @@ VisionSpray::VisionSpray()
 {
     qRegisterMetaType< cv::Mat >("cv::Mat");
 #ifdef USE_CAMERA
-    this->cameraOne = new QTGIGE("Basler-21325585");
-    this->cameraTwo = new QTGIGE("Basler-21322519");
+//     this->cameraOne = new QTGIGE("Basler-21325585");
+    this->cameraOne = new QTGIGE("Basler-21322519");
+//     this->cameraTwo = new QTGIGE("Basler-21322519");
     this->cameraOne->setROI(500, 0, 1000, 1000);
 //     this->cameraTwo->setROI(0, 0, 1000, 1000);
     this->cameraOne->writeBool("AcquisitionFrameRateEnable", true);
@@ -23,7 +24,7 @@ VisionSpray::VisionSpray()
 //     this->cameraTwo->startAquisition();
 //    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
     connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demOne, SLOT(newBayerGRImage(cv::Mat, qint64)));
-    connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demTwo, SLOT(newBayerGRImage(cv::Mat, qint64)));
+//     connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demTwo, SLOT(newBayerGRImage(cv::Mat, qint64)));
 #endif
 
 #ifdef USE_DATALOGGER
@@ -56,6 +57,27 @@ VisionSpray::VisionSpray()
 }
 
 #ifndef USE_CAMERA
+VisionSpray::VisionSpray()
+{
+    qRegisterMetaType< cv::Mat >("cv::Mat");
+#ifdef USE_CAMERA
+//     this->cameraOne = new QTGIGE("Basler-21325585");
+    this->cameraOne = new QTGIGE("Basler-21322519");
+//     this->cameraTwo = new QTGIGE("Basler-21322519");
+    this->cameraOne->setROI(500, 0, 1000, 1000);
+//     this->cameraTwo->setROI(0, 0, 1000, 1000);
+    this->cameraOne->writeBool("AcquisitionFrameRateEnable", true);
+    this->cameraOne->writeFloat("AcquisitionFrameRateAbs", 20);
+    this->cameraOne->writeInt("ExposureTimeRaw", 10000);
+//     this->cameraTwo->writeBool("AcquisitionFrameRateEnable", true);
+//     this->cameraTwo->writeFloat("AcquisitionFrameRateAbs", 5);
+    this->cameraOne->startAquisition();
+//     this->cameraTwo->startAquisition();
+//    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat)), &demOne, SLOT(newBayerGRImage(cv::Mat)), Qt::QueuedConnection);
+    connect(this->cameraOne, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demOne, SLOT(newBayerGRImage(cv::Mat, qint64)));
+//     connect(this->cameraTwo, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &demTwo, SLOT(newBayerGRImage(cv::Mat, qint64)));
+#endif
+
 void VisionSpray::init_CameraSimulator(void )
 {
     QDir simdir("/home/morten/Dropbox/Ph.D./MoDiCoVi field trials/Spray/2012-10-08 14:40:07.001 MoDiCoVi log/converted_png/");

@@ -49,6 +49,7 @@ private:
     QPushButton * Valve1Btn;
     QPushButton * Valve2Btn;
     QPushButton * cameraSettingsBtn;
+    QPushButton * henrikTester;
     CQtOpenCVViewerGl * view;
     void drawGui(void);
     QGridLayout *Layout;
