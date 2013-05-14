@@ -22,3 +22,6 @@
 [submodule "include/qtRosBridge"]
 	path = include/qtRosBridge
 	url = git@github.com:Stigaard/qtRosBridge.git
+[submodule "include/qtADAM"]
+	path = include/qtADAM
+	url = git@github.com:Stigaard/qtadam.git

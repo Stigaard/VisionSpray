@@ -46,7 +46,7 @@ private slots:
 protected:
     virtual void run();
 signals:
-  void forwardVelocity(double v);
+  void forwardVelocity(float v);
 };
 
 #endif // ARMADILLOINTERFACE_H

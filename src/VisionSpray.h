@@ -2,20 +2,22 @@
 #define VisionSpray_H
 
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QPushButton>
-#include <QtGui/QGridLayout>
-#include <QtGui/QComboBox>
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QRadioButton>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QComboBox>
+#include <QWidget>
+#include <QLabel>
+#include <QButtonGroup>
+#include <QRadioButton>
 #include <QDir>    
 #include <QSettings>
 
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
 #include "demosaic_cv.h"
 #include "armadillointerface.h"
+#include "nozzlecontrol.h"
+
 #include "../include/BayerExG/exg_cv.h"
 #ifdef USE_GPS
   #include "../include/gpsReader/gpsreader.h"
@@ -39,6 +41,7 @@ private:
     armadilloInterface armadillo;
     QPushButton * Valve1Btn;
     QPushButton * Valve2Btn;
+    QPushButton * Valve3Btn;
     QPushButton * cameraSettingsBtn;
     CQtOpenCVViewerGl * view;
     void drawGui(void);
@@ -51,7 +54,7 @@ private:
     demosaic_cv dem;
     ExG_cv exg;
     QSettings settings;
-    
+    NozzleControl nz;
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
@@ -59,6 +62,7 @@ private:
 #endif
 private slots:
     void currentViewChanged ( const QString & text );
+    void valveButtonMapper();
 };
 
 #endif // VisionSpray_H

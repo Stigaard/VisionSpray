@@ -25,61 +25,30 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QVariant>
-#include "armadillointerface.h"
-#include "armadillointerface.moc"
 
+#ifndef NOZZLECONTROL_H
+#define NOZZLECONTROL_H
 
-armadilloInterface::armadilloInterface(QObject* parent): QThread(parent)
+#include <QObject>
+#include <QSettings>
+#include <QHostAddress>
+#include "../include/qtADAM/qadam.h"
+
+class NozzleControl : public QObject
 {
-  this->start();
-}
+  Q_OBJECT
+public:
+    explicit NozzleControl(QObject* parent = 0);
+public slots:
+    void spray(quint8 nozzleID, bool state);
+signals:
+    void write_bit(quint8 bit, bool data);
+private:
+    QSettings settings;
+    quint8 nozzle[3];
+    void loadSettings(void);
+    QADAM * adam;
+    QHostAddress adamAdr;
+};
 
-void armadilloInterface::run()
-{
-#ifndef EMULATE_ARMADILLO
-    QString rosBridgeAdr;
-    quint32 rosBridgePort;      
-    if(settings.contains("ROS/BridgeAdr"))
-    {
-      rosBridgeAdr = settings.value("ROS/BridgeAdr").toString();
-    }
-    else
-    {
-      rosBridgeAdr = "127.0.0.1";
-      settings.setValue("ROS/BridgeAdr", rosBridgeAdr);
-    }
-    if(settings.contains("ROS/BridgePort"))
-    {
-      rosBridgePort = settings.value("ROS/BridgePort").toInt();
-    }
-    else
-    {
-      rosBridgePort = 9090;
-      settings.setValue("ROS/BridgePort", rosBridgePort);
-    }
-    QHostAddress rosAdr(rosBridgeAdr);
-    ros = new qtRosBridge(rosAdr, rosBridgePort);
-    connect(ros, SIGNAL(newMsg(QVariant)), this, SLOT(msgFromRosReceiver(QVariant)));
-    ros->subscribe("/fmKnowledge/wheel_odom", "nav_msgs/Odometry", 1000);  
-#else
-    while(true)
-    {
-      float vel = 1;
-      emit(forwardVelocity(vel));
-      this->msleep(1000);
-    }
-#endif
-    exec();
-}
-
-void armadilloInterface::msgFromRosReceiver(QVariant msg)
-{
-  if(msg.toMap()["topic"].toString().compare("/fmKnowledge/wheel_odom")==0)
-  {
-    float vel = msg.toMap()["msg"].toMap()["twist"].toMap()["twist"].toMap()["linear"].toMap()["x"].toDouble();
-//    qDebug() << "Velocity: " << vel;
-    emit(forwardVelocity(vel));
-  }
-//  qDebug() << flush;
-}
+#endif // NOZZLECONTROL_H

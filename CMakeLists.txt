@@ -48,4 +48,5 @@ add_definitions(${QT_DEFINITIONS})
 add_executable(VisionSpray ${VisionSpray_SRCS} )
 target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
-		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget BayerExG gpsReader qtRosBridge)
+		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget 
+		      BayerExG gpsReader qtRosBridge qtADAM)
