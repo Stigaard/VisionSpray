@@ -25,61 +25,59 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QVariant>
-#include "armadillointerface.h"
-#include "armadillointerface.moc"
+#include <iostream>
+#include "nozzlecontrol.h"
+#include "nozzlecontrol.moc"
 
-
-armadilloInterface::armadilloInterface(QObject* parent): QThread(parent)
+NozzleControl::NozzleControl(QObject* parent): QObject(parent)
 {
-  this->start();
+  this->loadSettings();
+  this->adam = new QADAM(this->adamAdr);
+  connect(this, SIGNAL(write_bit(quint8,bool)), this->adam, SLOT(write_bit(quint8,bool)), Qt::DirectConnection);
 }
 
-void armadilloInterface::run()
+void NozzleControl::loadSettings(void )
 {
-#ifndef EMULATE_ARMADILLO
-    QString rosBridgeAdr;
-    quint32 rosBridgePort;      
-    if(settings.contains("ROS/BridgeAdr"))
-    {
-      rosBridgeAdr = settings.value("ROS/BridgeAdr").toString();
-    }
-    else
-    {
-      rosBridgeAdr = "127.0.0.1";
-      settings.setValue("ROS/BridgeAdr", rosBridgeAdr);
-    }
-    if(settings.contains("ROS/BridgePort"))
-    {
-      rosBridgePort = settings.value("ROS/BridgePort").toInt();
-    }
-    else
-    {
-      rosBridgePort = 9090;
-      settings.setValue("ROS/BridgePort", rosBridgePort);
-    }
-    QHostAddress rosAdr(rosBridgeAdr);
-    ros = new qtRosBridge(rosAdr, rosBridgePort);
-    connect(ros, SIGNAL(newMsg(QVariant)), this, SLOT(msgFromRosReceiver(QVariant)));
-    ros->subscribe("/fmKnowledge/wheel_odom", "nav_msgs/Odometry", 1000);  
-#else
-    while(true)
-    {
-      float vel = 1;
-      emit(forwardVelocity(vel));
-      this->msleep(1000);
-    }
-#endif
-    exec();
+     if(settings.contains("NozzleControl/nozzle0bit"))
+      nozzle[0] = settings.value("NozzleControl/nozzle0bit").toUInt();
+     else
+     {
+       nozzle[0] = 0;
+       settings.setValue("NozzleControl/nozzle0bit", nozzle[0]);
+     }
+     
+     if(settings.contains("NozzleControl/nozzle1bit"))
+      nozzle[1] = settings.value("NozzleControl/nozzle1bit").toUInt();
+     else
+     {
+       nozzle[1] = 1;
+       settings.setValue("NozzleControl/nozzle1bit", nozzle[1]);
+     }
+     
+     if(settings.contains("NozzleControl/nozzle2bit"))
+      nozzle[2] = settings.value("NozzleControl/nozzle2bit").toUInt();
+     else
+     {
+       nozzle[2] = 2;
+       settings.setValue("NozzleControl/nozzle2bit", nozzle[2]);
+     }
+     
+     if(settings.contains("NozzleControl/ADAM_IP"))
+      this->adamAdr = settings.value("NozzleControl/ADAM_IP").toString();
+     else
+     {
+       this->adamAdr = "10.0.0.1";
+       settings.setValue("NozzleControl/ADAM_IP", this->adamAdr.toString());
+     }
 }
 
-void armadilloInterface::msgFromRosReceiver(QVariant msg)
+void NozzleControl::spray(quint8 nozzleID, bool state)
 {
-  if(msg.toMap()["topic"].toString().compare("/fmKnowledge/wheel_odom")==0)
+  if(nozzleID<3)
   {
-    float vel = msg.toMap()["msg"].toMap()["twist"].toMap()["twist"].toMap()["linear"].toMap()["x"].toDouble();
-//    qDebug() << "Velocity: " << vel;
-    emit(forwardVelocity(vel));
+    emit(write_bit(nozzle[nozzleID], state));
+    emit(write_bit(nozzle[nozzleID], state));
   }
-//  qDebug() << flush;
+  else
+    std::cerr << "Invalid nozzleID" << std::endl;
 }

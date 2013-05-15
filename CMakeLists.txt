@@ -7,6 +7,7 @@ find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
 set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 0)
+set(USE_GPS 1) #If compiling for using a GPS
 
 set(USE_CAMERA 1) #If compiling for using a camera
 set(USE_GPS 0) #If compiling for using a GPS
@@ -62,6 +63,8 @@ add_definitions(${QT_DEFINITIONS})
 add_executable(VisionSpray ${VisionSpray_SRCS} )
 target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
+		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget 
+		      BayerExG gpsReader qtRosBridge qtADAM)
 		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget BayerExG gpsReader qtRosBridge ${qextserialport_LIBRARY})
 target_link_libraries(VisionSpray RowDetect)
 #include(ExternalProject)
