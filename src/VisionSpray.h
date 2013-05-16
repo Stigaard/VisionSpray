@@ -11,7 +11,7 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDir>    
-#include <rowdetect.h>
+#include "../include/RowDetect/rowdetect.h"
 #include <QSettings>
 
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
