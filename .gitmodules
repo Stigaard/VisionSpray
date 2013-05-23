@@ -25,3 +25,6 @@
 [submodule "include/qtADAM"]
 	path = include/qtADAM
 	url = git@github.com:Stigaard/qtadam.git
+[submodule "include/SprayTimeKeeper"]
+	path = include/SprayTimeKeeper
+	url = git@github.com:Stigaard/SprayTimeKeeper.git
