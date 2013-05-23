@@ -65,7 +65,7 @@ target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
 		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget 
 		      BayerExG gpsReader qtRosBridge qtADAM)
-target_link_libraries(VisionSpray RowDetect)
+target_link_libraries(VisionSpray RowDetect SprayPlanner)
 #include(ExternalProject)
 #message("${CMAKE_COMMAND}")
 #ExternalProject_Add( # not finish

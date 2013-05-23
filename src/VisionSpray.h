@@ -18,6 +18,8 @@
 #include "demosaic_cv.h"
 #include "armadillointerface.h"
 #include "nozzlecontrol.h"
+#include "../include/RowDetect/greendetect.h"
+#include "../include/SprayPlanner/sprayplanner.h"
 
 #include "../include/BayerExG/exg_cv.h"
 #ifdef USE_GPS
@@ -57,6 +59,9 @@ private:
     QSettings settings;
     NozzleControl nz;
     RowDetect m_rowDetect;
+    GreenDetect m_greendetect;
+    SprayPlanner m_sprayplanner;
+    
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
