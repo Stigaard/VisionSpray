@@ -17,6 +17,7 @@
 #include "demosaic_cv.h"
 #include "armadillointerface.h"
 #include "nozzlecontrol.h"
+#include "../include/SprayTimeKeeper/spraytimekeeper.h"
 
 #include "../include/BayerExG/exg_cv.h"
 #ifdef USE_GPS
@@ -55,6 +56,7 @@ private:
     ExG_cv exg;
     QSettings settings;
     NozzleControl nz;
+    SprayTimeKeeper * spraytimekeeper;
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
