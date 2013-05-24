@@ -19,6 +19,7 @@
 #include "armadillointerface.h"
 #include "nozzlecontrol.h"
 #include "../include/RowDetect/greendetect.h"
+#include "../include/SprayTimeKeeper/spraytimekeeper.h"
 #include "../include/SprayPlanner/sprayplanner.h"
 
 #include "../include/BayerExG/exg_cv.h"
@@ -59,6 +60,7 @@ private:
     QSettings settings;
     NozzleControl nz;
     RowDetect m_rowDetect;
+    SprayTimeKeeper * spraytimekeeper;
     GreenDetect m_greendetect;
     SprayPlanner m_sprayplanner;
     

@@ -5,6 +5,7 @@
 #include <QtGui/QAction>
 #include <QApplication>
 #include <QTimer>
+#include <QDateTime>
 
 
 VisionSpray::VisionSpray()
@@ -36,7 +37,13 @@ VisionSpray::VisionSpray()
      }
 
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
+     
+     this->spraytimekeeper = new SprayTimeKeeper(this, &nz);
+     
      this->camera->startAquisition();
+     
+     
+     
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
 #ifdef USE_GPS
     this->gps = new gpsReader();
@@ -61,6 +68,8 @@ VisionSpray::VisionSpray()
     connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(updateBuffer(cv::Mat,qint64)));
     
     connect(cameraSettingsBtn, SIGNAL(pressed()), camera, SLOT(showCameraSettings()));
+    
+    this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
 }
 
 void VisionSpray::valveButtonMapper()
