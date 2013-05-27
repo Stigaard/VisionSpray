@@ -36,6 +36,9 @@ VisionSpray::VisionSpray()
 	 std::cout << "Unknown error" << std::endl;
      }
 
+     cameraSerial = "Basler-21272794";
+     //TODO: Fix camera serial readin from config file
+     std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
      
      this->spraytimekeeper = new SprayTimeKeeper(this, &nz);
@@ -66,6 +69,7 @@ VisionSpray::VisionSpray()
     
     //connect(&m_rowDetect,SIGNAL(debugImage(cv::Mat,qint64)),view, SLOT(showImage(cv::Mat, qint64)));
     connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(updateBuffer(cv::Mat,qint64)));
+    //connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(showImage(cv::Mat,qint64)));
     
     connect(cameraSettingsBtn, SIGNAL(pressed()), camera, SLOT(showCameraSettings()));
     
