@@ -69,7 +69,9 @@ VisionSpray::VisionSpray()
     
     connect(cameraSettingsBtn, SIGNAL(pressed()), camera, SLOT(showCameraSettings()));
     
-    this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
+    connect(&m_sprayplanner,SIGNAL(spray(int,qint64,qint64)),spraytimekeeper,SLOT(Spray(int,qint64,qint64)));
+    
+    //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
 }
 
 void VisionSpray::valveButtonMapper()
