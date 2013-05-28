@@ -20,9 +20,9 @@
 #ifndef SPRAYTIMEKEEPER_H
 #define SPRAYTIMEKEEPER_H
 
-#include <qt4/QtCore/QThread>
-#include <qt4/QtCore/QMutex>
-#include <qt4/QtCore/QElapsedTimer>
+#include <QThread>
+#include <QMutex>
+#include <QElapsedTimer>
 
 class sprayTimeKeeper : public QThread
 {
