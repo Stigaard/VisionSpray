@@ -70,6 +70,7 @@ VisionSpray::VisionSpray()
     //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat,qint64)),view,SLOT(showImage(cv::Mat,qint64)));
     connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
     connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>)),view,SLOT(addAlpha(cv::Mat_<uint8_t>)));
+    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
     connect(this->Valve1Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
     connect(this->Valve2Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));

@@ -5,7 +5,7 @@ find_package(Qt4 REQUIRED QtGui QtCore QtOpenGL)
 find_package(OpenCV REQUIRED)
 find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
-set(EMULATE_CAMERA 0)
+set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 1)
 set(USE_GPS 1) #If compiling for using a GPS
 
