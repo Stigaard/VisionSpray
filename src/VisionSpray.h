@@ -23,12 +23,15 @@
 #include "../include/SprayPlanner/sprayplanner.h"
 
 #include "../include/BayerExG/exg_cv.h"
+#include "../include/PresenningExG/presenningExg.h"
 #ifdef USE_GPS
   #include "../include/gpsReader/gpsreader.h"
   #include "../include/qtgpscWidget/gpswidget.h"
 #endif
 
 #include "../include/QtGigE/qtgige.h"
+
+#include "../include/LoggerModule/imagelogger.h"
 
 #ifdef USE_DATALOGGER
   #include "datalogger.h"
@@ -56,14 +59,15 @@ private:
     QComboBox *imageSelect;
     QLabel * modicoviText;
     demosaic_cv dem;
-    ExG_cv exg;
+//    ExG_cv exg;
+    presenningExg exg;
     QSettings settings;
     NozzleControl nz;
     RowDetect m_rowDetect;
     SprayTimeKeeper * spraytimekeeper;
     GreenDetect m_greendetect;
     SprayPlanner m_sprayplanner;
-    
+    ImageLogger * imageLog;
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
@@ -72,6 +76,7 @@ private:
 private slots:
     void currentViewChanged ( const QString & text );
     void valveButtonMapper();
+    void velocityEcho(float v);
 };
 
 #endif // VisionSpray_H
