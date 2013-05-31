@@ -35,11 +35,21 @@ VisionSpray::VisionSpray()
        else
 	 std::cout << "Unknown error" << std::endl;
      }
-
+     
+#ifdef USE_GPS
+    this->gps = new gpsReader();
+#endif
+     drawGui();
      cameraSerial = "Basler-21272794";
      //TODO: Fix camera serial readin from config file
+     //return;
      std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
+     int acqFramerate = 1;
+     this->camera->writeBool("AcquisitionFrameRateEnable", true);
+     this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
+     this->imageLog = new ImageLogger("../Logging", "rawImages");
+     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat,qint64)), this->imageLog, SLOT(pngImageLogger(cv::Mat,qint64)));
      
      this->spraytimekeeper = new SprayTimeKeeper(this, &nz);
      
@@ -48,11 +58,9 @@ VisionSpray::VisionSpray()
      
      
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
-#ifdef USE_GPS
-    this->gps = new gpsReader();
-#endif
+
          
-    drawGui();
+    
     connect(this->Valve1Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
     connect(this->Valve2Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
     connect(this->Valve3Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
@@ -76,8 +84,16 @@ VisionSpray::VisionSpray()
     
     connect(&m_sprayplanner,SIGNAL(spray(int,qint64,qint64)),spraytimekeeper,SLOT(Spray(int,qint64,qint64)));
     
+    connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
+    
     //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
 }
+
+void VisionSpray::velocityEcho(float v)
+{
+  std::cout << "Velocity:" << v << "m/s" << std::endl;
+}
+
 
 void VisionSpray::valveButtonMapper()
 {

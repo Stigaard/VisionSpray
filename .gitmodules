@@ -34,3 +34,9 @@
 [submodule "include/SprayTimeKeeper"]
 	path = include/SprayTimeKeeper
 	url = git@github.com:Stigaard/SprayTimeKeeper.git
+[submodule "include/LoggerModule"]
+	path = include/LoggerModule
+	url = git@github.com:henrikmidtiby/LoggerModule.git
+[submodule "include/PresenningExG"]
+	path = include/PresenningExG
+	url = git@github.com:Stigaard/PresenningExG.git

@@ -46,7 +46,7 @@ void armadilloInterface::run()
     }
     else
     {
-      rosBridgeAdr = "127.0.0.1";
+      rosBridgeAdr = "192.168.1.129";
       settings.setValue("ROS/BridgeAdr", rosBridgeAdr);
     }
     if(settings.contains("ROS/BridgePort"))
@@ -61,7 +61,7 @@ void armadilloInterface::run()
     QHostAddress rosAdr(rosBridgeAdr);
     ros = new qtRosBridge(rosAdr, rosBridgePort);
     connect(ros, SIGNAL(newMsg(QVariant)), this, SLOT(msgFromRosReceiver(QVariant)));
-    ros->subscribe("/fmKnowledge/wheel_odom", "nav_msgs/Odometry", 1000);  
+    ros->subscribe("/fmKnowledge/encoder_odom", "nav_msgs/Odometry", 500);  
 #else
     while(true)
     {
@@ -75,7 +75,7 @@ void armadilloInterface::run()
 
 void armadilloInterface::msgFromRosReceiver(QVariant msg)
 {
-  if(msg.toMap()["topic"].toString().compare("/fmKnowledge/wheel_odom")==0)
+  if(msg.toMap()["topic"].toString().compare("/fmKnowledge/encoder_odom")==0)
   {
     float vel = msg.toMap()["msg"].toMap()["twist"].toMap()["twist"].toMap()["linear"].toMap()["x"].toDouble();
 //    qDebug() << "Velocity: " << vel;
