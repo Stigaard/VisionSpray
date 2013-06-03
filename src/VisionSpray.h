@@ -59,8 +59,8 @@ private:
     QComboBox *imageSelect;
     QLabel * modicoviText;
     demosaic_cv dem;
-//    ExG_cv exg;
-    presenningExg exg;
+    ExG_cv exg;
+    //presenningExg exg;
     QSettings settings;
     NozzleControl nz;
     RowDetect m_rowDetect;
