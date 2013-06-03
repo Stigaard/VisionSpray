@@ -7,7 +7,7 @@ find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
 set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 1)
-set(USE_GPS 1) #If compiling for using a GPS
+set(USE_GPS 0) #If compiling for using a GPS
 
 set(USE_CAMERA 1) #If compiling for using a camera
 set(USE_GPS 0) #If compiling for using a GPS
