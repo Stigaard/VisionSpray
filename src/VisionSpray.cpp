@@ -74,7 +74,7 @@ VisionSpray::VisionSpray()
     //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat,qint64)),view,SLOT(showImage(cv::Mat,qint64)));
     connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
     connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
-    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
+//    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
     connect(this->Valve1Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
     connect(this->Valve2Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
@@ -88,8 +88,9 @@ VisionSpray::VisionSpray()
     
     connect(&m_sprayplanner,SIGNAL(spray(int,qint64,qint64)),spraytimekeeper,SLOT(Spray(int,qint64,qint64)));
     
-    connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
-    
+    //connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
+    connect(this->gps, SIGNAL(velocity(float)), &m_sprayplanner, SLOT(velocity(float)));
+    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
     //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
 }
 
