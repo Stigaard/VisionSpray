@@ -34,7 +34,7 @@
 #include "../include/LoggerModule/imagelogger.h"
 
 #ifdef USE_DATALOGGER
-  #include "datalogger.h"
+  #include "../include/LoggerModule/loggermodule.h"
 #endif
 
 class VisionSpray : public QMainWindow
@@ -67,7 +67,10 @@ private:
     SprayTimeKeeper * spraytimekeeper;
     GreenDetect m_greendetect;
     SprayPlanner m_sprayplanner;
+#ifdef USE_DATALOGGER
     ImageLogger * imageLog;
+    LoggerModule * velocityLogger;
+#endif
 #ifdef USE_GPS
     void loadGPS(void);
     gpsReader * gps;
@@ -77,6 +80,7 @@ private slots:
     void currentViewChanged ( const QString & text );
     void valveButtonMapper();
     void velocityEcho(float v);
+    void velocityLog(float v);
 };
 
 #endif // VisionSpray_H

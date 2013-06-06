@@ -48,8 +48,12 @@ VisionSpray::VisionSpray()
      int acqFramerate = 1;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
+#ifdef USE_DATALOGGER
      this->imageLog = new ImageLogger("../Logging", "rawImages");
+     this->velocityLogger = new LoggerModule("../Logging", "Velocity");
+     connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityLog(float)));
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat,qint64)), this->imageLog, SLOT(pngImageLogger(cv::Mat,qint64)));
+#endif
      
      this->spraytimekeeper = new SprayTimeKeeper(this, &nz);
      
@@ -87,6 +91,13 @@ VisionSpray::VisionSpray()
     connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
     
     //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
+}
+
+void VisionSpray::velocityLog(float v)
+{
+  #ifdef USE_DATALOGGER
+  this->velocityLogger->log("Velocity", QString::number(v).toLocal8Bit().constData());
+  #endif
 }
 
 void VisionSpray::velocityEcho(float v)

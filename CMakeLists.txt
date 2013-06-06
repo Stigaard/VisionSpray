@@ -7,11 +7,10 @@ find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
 set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 1)
-set(USE_GPS 0) #If compiling for using a GPS
 
 set(USE_CAMERA 1) #If compiling for using a camera
-set(USE_GPS 0) #If compiling for using a GPS
-set(USE_DATALOGGER 0) #If compiling with datalogging
+set(USE_GPS 1) #If compiling for using a GPS
+set(USE_DATALOGGER 1) #If compiling with datalogging
 set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
 
@@ -23,6 +22,10 @@ if(PROFILE)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif(PROFILE)
+
+if(USE_DATALOGGER) #If logging data
+  add_definitions(-DUSE_DATALOGGER)
+ endif(USE_DATALOGGER)
 
 if(USE_GPS)
   add_definitions(-DUSE_GPS)
@@ -65,7 +68,10 @@ target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
 		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget 
 		      BayerExG gpsReader qtRosBridge qtADAM spraytimekeeper PresenningExG)
-target_link_libraries(VisionSpray RowDetect SprayPlanner ImageLogger LoggerModule DataLogger CombinedLogger)
+target_link_libraries(VisionSpray RowDetect SprayPlanner)
+if(USE_DATALOGGER)
+target_link_libraries(VisionSpray ImageLogger LoggerModule)
+endif(USE_DATALOGGER)
 #include(ExternalProject)
 #message("${CMAKE_COMMAND}")
 #ExternalProject_Add( # not finish
