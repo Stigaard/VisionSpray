@@ -2,10 +2,11 @@ project(VisionSpray)
 cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMAKE_Modules/")
 find_package(Qt4 REQUIRED QtGui QtCore QtOpenGL)
+find_package(Qwt)
 find_package(OpenCV REQUIRED)
 find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
-set(EMULATE_CAMERA 1)
+set(EMULATE_CAMERA 0)
 set(EMULATE_ARMADILLO 1)
 
 set(USE_CAMERA 1) #If compiling for using a camera
@@ -59,7 +60,11 @@ endif(CalibrateSprayTime)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 
-include_directories(${QT_INCLUDES} ${OPENCV_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${ARAVIS_INCLUDE_DIRS})
+include_directories(${QT_INCLUDES} 
+		    ${OPENCV_INCLUDE_DIR} 
+		    ${CMAKE_CURRENT_BINARY_DIR} 
+		    ${ARAVIS_INCLUDE_DIRS} 
+		    ${QWT_INCLUDE_DIR})
 
 qt4_automoc(${VisionSpray_SRCS} ${CAMERA_SRCS} ${GPS_SRCS})
 add_definitions(${QT_DEFINITIONS})
@@ -67,7 +72,8 @@ add_executable(VisionSpray ${VisionSpray_SRCS} )
 target_link_libraries(VisionSpray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
 		      ${OpenCV_LIBS} ${CAMERA_LIBS} ${RT_LIBRARIES} pthread ${QT_QTOPENGL_LIBRARY}
 		      ${OPENGL_glu_LIBRARY} GL ${GPS_LIBS} qOpenGLCVWidget QtGigE qtgpscWidget 
-		      BayerExG gpsReader qtRosBridge qtADAM spraytimekeeper PresenningExG)
+		      BayerExG gpsReader qtRosBridge qtADAM spraytimekeeper PresenningExG ${QWT_LIBRARIES}
+		      velocityFilter)
 target_link_libraries(VisionSpray RowDetect SprayPlanner)
 if(USE_DATALOGGER)
 target_link_libraries(VisionSpray ImageLogger LoggerModule)

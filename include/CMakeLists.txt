@@ -42,3 +42,5 @@ add_subdirectory(PresenningExG)
 if(USE_DATALOGGER)
   add_subdirectory(LoggerModule)
 endif(USE_DATALOGGER)
+
+add_subdirectory(velocity_filter)

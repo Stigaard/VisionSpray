@@ -36,6 +36,8 @@ VisionSpray::VisionSpray()
 	 std::cout << "Unknown error" << std::endl;
      }
      
+     initPlots();
+     
 #ifdef USE_GPS
     this->gps = new gpsReader();
 #endif
@@ -45,7 +47,7 @@ VisionSpray::VisionSpray()
      //return;
      std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
-     float acqFramerate = 2;
+     float acqFramerate = 5;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
 #ifdef USE_DATALOGGER
@@ -90,10 +92,61 @@ VisionSpray::VisionSpray()
     connect(&m_sprayplanner,SIGNAL(spray(int,qint64,qint64)),spraytimekeeper,SLOT(Spray(int,qint64,qint64)));
     
     //connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
-    connect(this->gps, SIGNAL(velocity(float)), &m_sprayplanner, SLOT(velocity(float)));
+    connect(&m_velocityfilter, SIGNAL(velocity(float)), &m_sprayplanner, SLOT(velocity(float)));
+    connect(this->gps, SIGNAL(velocity(float)), &m_velocityfilter, SLOT(velocitySlot(float)));
     connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
+    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(rawVelPlot(float)));
+    connect(&m_velocityfilter, SIGNAL(velocity(float)), this, SLOT(filtVelPlot(float)));
     //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
+    plotTimer = new QTimer(this);
+    connect(this->plotTimer, SIGNAL(timeout()), this, SLOT(updatePlots()));
+    plotTimer->start(100);
 }
+
+void VisionSpray::initPlots(void )
+{
+        m_VelPlot = new QwtPlot;
+        m_VelPlot->resize(800,600);
+        m_filtVelCurve = new QwtPlotCurve();
+        m_filtVelCurve->setPen(QPen(QColor("blue")));
+        m_filtVelCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+        m_rawVelCurve = new QwtPlotCurve();
+        m_rawVelCurve->setPen(QPen(QColor("red")));
+        m_filtVelCurve->attach(m_VelPlot);
+        m_rawVelCurve->attach(m_VelPlot);
+	filtVelocities.reserve(30*20);
+	rawVelocities.reserve(30*20);
+	velocityTimes.reserve(30*20);
+	for(int i=0;i<30*20;i++)
+	{
+	  velocityTimes.enqueue(((float)((30*20)-i))*(1.0/20.0));
+	  filtVelocities.enqueue(0);
+	  rawVelocities.enqueue(0);
+	}
+}
+
+void VisionSpray::filtVelPlot(float v)
+{
+  filtVelocities.dequeue();
+  filtVelocities.enqueue(v);
+  m_filtVelCurve->setSamples(velocityTimes.toVector(), filtVelocities.toVector());
+}
+
+
+void VisionSpray::rawVelPlot(float v)
+{
+  rawVelocities.dequeue();
+  rawVelocities.enqueue(v);
+  m_rawVelCurve->setSamples(velocityTimes.toVector(), rawVelocities.toVector());
+}
+
+void VisionSpray::updatePlots(void )
+{
+    m_VelPlot->replot();
+    m_VelPlot->show();
+}
+
+
 
 void VisionSpray::velocityLog(float v)
 {
