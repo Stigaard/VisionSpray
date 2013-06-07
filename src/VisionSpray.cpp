@@ -10,31 +10,31 @@
 
 VisionSpray::VisionSpray()
 {
-      qRegisterMetaType< cv::Mat >("cv::Mat"); 
-     QString cameraSerial;
-     if(settings.contains("camera1/serial"))
-      cameraSerial = settings.value("camera/serial").toString();
-     else
-     {
-       cameraSerial = "Basler-21272795";
-       settings.setValue("camera1/serial", "Basler-21272795");
-     }
+    qRegisterMetaType< cv::Mat >("cv::Mat");
+    QString cameraSerial;
+    if(settings.contains("camera1/serial"))
+        cameraSerial = settings.value("camera/serial").toString();
+    else
+    {
+        cameraSerial = "Basler-21272795";
+        settings.setValue("camera1/serial", "Basler-21272795");
+    }
 
-     settings.sync();
-     std::cout << "Config file:" << settings.fileName().toLocal8Bit().constData() << std::endl;
-     if(settings.status()!=QSettings::NoError)
-     {
-       std::cout << "Error ocurred with settings" << std::endl;
-       if(settings.status()==QSettings::AccessError)
-       {
-	 std::cout << "Access error" << std::endl;
-	std::cout << "Config file:" << settings.fileName().toLocal8Bit().constData() << std::endl;
-       }
-       else if(settings.status()==QSettings::FormatError)
-	 std::cout << "Format error" << std::endl;
-       else
-	 std::cout << "Unknown error" << std::endl;
-     }
+    settings.sync();
+    std::cout << "Config file:" << settings.fileName().toLocal8Bit().constData() << std::endl;
+    if(settings.status()!=QSettings::NoError)
+    {
+        std::cout << "Error ocurred with settings" << std::endl;
+        if(settings.status()==QSettings::AccessError)
+        {
+            std::cout << "Access error" << std::endl;
+            std::cout << "Config file:" << settings.fileName().toLocal8Bit().constData() << std::endl;
+        }
+        else if(settings.status()==QSettings::FormatError)
+            std::cout << "Format error" << std::endl;
+        else
+            std::cout << "Unknown error" << std::endl;
+    }
      
 #ifdef USE_GPS
     this->gps = new gpsReader();
