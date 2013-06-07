@@ -45,7 +45,7 @@ VisionSpray::VisionSpray()
      //return;
      std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
-     int acqFramerate = 1;
+     float acqFramerate = 2;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
 #ifdef USE_DATALOGGER
@@ -103,7 +103,14 @@ void VisionSpray::velocityLog(float v)
 
 void VisionSpray::velocityEcho(float v)
 {
-  std::cout << "Velocity:" << v << "m/s" << std::endl;
+  static int i = 0;
+  this->modicoviText->setText(QString::number(round(v*10)/10));
+  if(v>0.15)
+    if(i++>10)
+    {
+      std::cout << "Velocity:" << round(v*10)/10 << "m/s" << std::endl;
+      i = 0;
+    }
 }
 
 
