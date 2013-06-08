@@ -67,7 +67,7 @@ void armadilloInterface::run()
     {
       float vel = 1;
       emit(forwardVelocity(vel));
-      this->msleep(1000);
+      this->msleep(50);
     }
 #endif
     exec();
