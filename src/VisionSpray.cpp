@@ -10,7 +10,7 @@
 
 VisionSpray::VisionSpray()
 {
-      qRegisterMetaType< cv::Mat >("cv::Mat"); 
+     qRegisterMetaType< cv::Mat >("cv::Mat"); 
      QString cameraSerial;
      if(settings.contains("camera1/serial"))
       cameraSerial = settings.value("camera/serial").toString();
