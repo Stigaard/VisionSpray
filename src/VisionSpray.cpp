@@ -35,11 +35,17 @@ VisionSpray::VisionSpray()
        else
 	 std::cout << "Unknown error" << std::endl;
      }
-     
+#ifdef PLOT_VELOCITY
      initPlots();
+#endif
      
 #ifdef USE_GPS
     this->gps = new gpsReader();
+    connect(this->gps, SIGNAL(velocity(float)), &m_velocityfilter, SLOT(velocitySlot(float)));
+    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
+  #ifdef PLOT_VELOCITY
+    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(rawVelPlot(float)));
+  #endif
 #endif
      drawGui();
      cameraSerial = "Basler-21272794";
@@ -93,14 +99,13 @@ VisionSpray::VisionSpray()
     
     //connect(&(this->armadillo),SIGNAL(forwardVelocity(float)), this, SLOT(velocityEcho(float))); 
     connect(&m_velocityfilter, SIGNAL(velocity(float)), &m_sprayplanner, SLOT(velocity(float)));
-    connect(this->gps, SIGNAL(velocity(float)), &m_velocityfilter, SLOT(velocitySlot(float)));
-    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
-    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(rawVelPlot(float)));
+#ifdef PLOT_VELOCITY
     connect(&m_velocityfilter, SIGNAL(velocity(float)), this, SLOT(filtVelPlot(float)));
     //this->spraytimekeeper->Spray(0, (QDateTime::currentMSecsSinceEpoch()+10000)*1000, (QDateTime::currentMSecsSinceEpoch()+12000)*1000);
     plotTimer = new QTimer(this);
     connect(this->plotTimer, SIGNAL(timeout()), this, SLOT(updatePlots()));
     plotTimer->start(100);
+#endif
 }
 
 void VisionSpray::initPlots(void )

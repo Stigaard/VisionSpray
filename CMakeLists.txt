@@ -9,11 +9,11 @@ find_package(OpenGL REQUIRED)
 set(EMULATE_CAMERA 0)
 set(EMULATE_ARMADILLO 1)
 
-set(USE_CAMERA 1) #If compiling for using a camera
-set(USE_GPS 1) #If compiling for using a GPS
-set(USE_DATALOGGER 1) #If compiling with datalogging
+set(USE_GPS 0) #If compiling for using a GPS
+set(USE_DATALOGGER 0) #If compiling with datalogging
 set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
+set(PLOT_VELOCITY 0)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -24,9 +24,13 @@ if(PROFILE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif(PROFILE)
 
+if(PLOT_VELOCITY)
+  add_definitions(-DPLOT_VELOCITY)
+endif(PLOT_VELOCITY)
+
 if(USE_DATALOGGER) #If logging data
   add_definitions(-DUSE_DATALOGGER)
- endif(USE_DATALOGGER)
+endif(USE_DATALOGGER)
 
 if(USE_GPS)
   add_definitions(-DUSE_GPS)
