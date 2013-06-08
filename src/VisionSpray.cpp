@@ -70,6 +70,9 @@ VisionSpray::VisionSpray()
      this->camera->loadCorrectionImage("../include/QtGigE/correctionimage.png");
      
      this->modicovi = new modicovi_rt;
+     connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
+     connect(this->modicovi, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+     
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
      connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
 
@@ -83,7 +86,7 @@ VisionSpray::VisionSpray()
     connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_greendetect,SLOT(analyze(cv::Mat,qint64)));
     //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat,qint64)),view,SLOT(showImage(cv::Mat,qint64)));
     connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-    connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
+//    connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
 //    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
     connect(this->Valve1Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
@@ -91,7 +94,7 @@ VisionSpray::VisionSpray()
     connect(this->Valve3Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
     
     //connect(&m_rowDetect,SIGNAL(debugImage(cv::Mat,qint64)),view, SLOT(showImage(cv::Mat, qint64)));
-    connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(updateBuffer(cv::Mat,qint64)));
+//    connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(updateBuffer(cv::Mat,qint64)));
     //connect(&exg, SIGNAL(newImage(cv::Mat, qint64)), view, SLOT(showImage(cv::Mat,qint64)));
     
     connect(cameraSettingsBtn, SIGNAL(pressed()), camera, SLOT(showCameraSettings()));
@@ -199,18 +202,12 @@ void VisionSpray::drawGui(void )
     this->imageSelect = new QComboBox(globalWidget);
     //connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
     //connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), modi, SLOT(imshowSelector(QString)));
-    this->imageSelect->addItem("Input");
-    this->imageSelect->addItem("Excess Green");
-    this->imageSelect->addItem("Segmented");
-    this->imageSelect->addItem("Segmented Morphology");
-    this->imageSelect->addItem("Symmetry kernel magnitude");
-    this->imageSelect->addItem("Symmetry kernel threshold");
-    this->imageSelect->addItem("Edges thinned");
     this->modicoviText = new QLabel("Modicovi Score:");
     this->sideWidget = new QWidget(globalWidget);
     this->sideLayout = new QGridLayout(this->sideWidget);
     this->view->setMinimumHeight(768);
     this->view->setMinimumWidth(1024);
+    this->initViewSelect();
     this->Layout->addWidget(view, 1,1);
     this->Layout->addWidget(imageSelect, 2,1);
     this->Layout->addWidget(sideWidget, 1,2);
@@ -228,10 +225,44 @@ void VisionSpray::drawGui(void )
     setCentralWidget(this->globalWidget);
 }
 
+void VisionSpray::initViewSelect(void )
+{
+    this->imageSelect->addItem("Input");
+    this->imageSelect->addItem("Vignette Corrected");
+    this->imageSelect->addItem("Excess Green");
+    modicovi_prefix = "Modicovi:";
+    this->modicovi->initViewSelect(this->imageSelect, modicovi_prefix);
+    connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
+}
+
+
 void VisionSpray::currentViewChanged(const QString& text)
 {
+  static QObject * lastSender = 0;
   std::cout << "Received new view " << text.toLocal8Bit().data() << std::endl;
-  disconnect(this->view, SLOT(showImage(cv::Mat*)));
+  if(lastSender!=0)
+    disconnect(lastSender,0,this->view, 0);
+  if(text.compare("Input")==0)
+  {
+    lastSender = this->camera;
+    connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat,qint64)), this->view, SLOT(showImage(cv::Mat,qint64)));
+  }
+  if(text.compare("Vignette Corrected")==0)
+  {
+    lastSender = this->camera;
+    connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat,qint64)), this->view, SLOT(showImage(cv::Mat,qint64)));
+  }
+  if(text.compare("Excess Green")==0)
+  {
+    lastSender = &(this->exg);
+    connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->view, SLOT(showImage(cv::Mat,qint64)));
+  }
+  else if(text.startsWith(modicovi_prefix))
+  {
+    lastSender = this->modicovi;
+    QString id = text.midRef(modicovi_prefix.length()).toString();
+    this->modicovi->currentViewChanged(id, this->view);
+  }
 }
 
 VisionSpray::~VisionSpray()

@@ -70,8 +70,8 @@ private:
     QComboBox *imageSelect;
     QLabel * modicoviText;
     demosaic_cv dem;
-    //ExG_cv exg;
-    presenningExg exg;
+    ExG_cv exg;
+    //presenningExg exg;
     QSettings settings;
     NozzleControl nz;
     RowDetect m_rowDetect;
@@ -95,6 +95,8 @@ private:
     QwtPlot * m_VelPlot;
     QwtPlotCurve* m_filtVelCurve;
     QwtPlotCurve* m_rawVelCurve;
+    void initViewSelect(void);
+    QString modicovi_prefix;
 private slots:
     void currentViewChanged ( const QString & text );
     void valveButtonMapper();
