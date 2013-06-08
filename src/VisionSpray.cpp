@@ -69,7 +69,7 @@ VisionSpray::VisionSpray()
      
      this->camera->startAquisition();
      
-     this->camera->loadCorrectionImage("../include/QtGigE/correctionimage.png");
+     this->camera->loadCorrectionImage("../include/QtGigE/correctionimageOne.png");
      
      this->modicovi = new modicovi_rt;
      connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
