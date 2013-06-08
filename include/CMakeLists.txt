@@ -2,7 +2,7 @@ if(USE_RS232)
 #ADD_SUBDIRECTORY(qextserialport)
 endif(USE_RS232)
 add_subdirectory(RowDetect)
-#add_subdirectory(modicovi-rt)
+add_subdirectory(modicovi-rt)
 
 #qextserialport
 #Set twice once for each scope

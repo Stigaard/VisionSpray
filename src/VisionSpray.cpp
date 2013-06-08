@@ -69,6 +69,7 @@ VisionSpray::VisionSpray()
      
      this->camera->loadCorrectionImage("../include/QtGigE/correctionimage.png");
      
+     this->modicovi = new modicovi_rt;
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
      connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
 

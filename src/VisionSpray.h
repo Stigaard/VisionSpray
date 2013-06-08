@@ -30,6 +30,9 @@
 
 #include "../include/BayerExG/exg_cv.h"
 #include "../include/PresenningExG/presenningExg.h"
+#include "../include/modicovi-rt/modicovi_rt.h"
+
+
 #ifdef USE_GPS
   #include "../include/gpsReader/gpsreader.h"
   #include "../include/qtgpscWidget/gpswidget.h"
@@ -58,6 +61,7 @@ private:
     QPushButton * Valve3Btn;
     QPushButton * cameraSettingsBtn;
     CQtOpenCVViewerGl * view;
+    modicovi_rt * modicovi;
     void drawGui(void);
     QGridLayout *Layout;
     QGridLayout *sideLayout;
