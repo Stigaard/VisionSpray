@@ -56,6 +56,8 @@ VisionSpray::VisionSpray()
      float acqFramerate = 5;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
+     this->camera->setROI(0, 0, 2046, 1086);
+
 #ifdef USE_DATALOGGER
      this->imageLog = new ImageLogger("../Logging", "rawImages");
      this->velocityLogger = new LoggerModule("../Logging", "Velocity");
