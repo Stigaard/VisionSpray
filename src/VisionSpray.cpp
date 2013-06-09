@@ -56,6 +56,8 @@ VisionSpray::VisionSpray()
      float acqFramerate = 5;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
+     this->camera->setROI(0, 0, 2046, 1086);
+
 #ifdef USE_DATALOGGER
      this->imageLog = new ImageLogger("../Logging", "rawImages");
      this->velocityLogger = new LoggerModule("../Logging", "Velocity");
@@ -67,7 +69,7 @@ VisionSpray::VisionSpray()
      
      this->camera->startAquisition();
      
-     this->camera->loadCorrectionImage("../include/QtGigE/correctionimage.png");
+     this->camera->loadCorrectionImage("../include/QtGigE/correctionimageOne.png");
      
      //this->modicovi = new modicovi_rt;
      //connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
