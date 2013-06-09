@@ -6,7 +6,7 @@ find_package(Qwt)
 find_package(OpenCV REQUIRED)
 find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
-set(EMULATE_CAMERA 0)
+set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 1)
 
 set(USE_GPS 0) #If compiling for using a GPS

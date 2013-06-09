@@ -69,12 +69,13 @@ VisionSpray::VisionSpray()
      
      this->camera->loadCorrectionImage("../include/QtGigE/correctionimage.png");
      
-     this->modicovi = new modicovi_rt;
-     connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
-     connect(this->modicovi, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+     //this->modicovi = new modicovi_rt;
+     //connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
+     //connect(this->modicovi, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      
-     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
-     connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
+     //connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
+     //connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
+     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
 
          
     
@@ -82,11 +83,13 @@ VisionSpray::VisionSpray()
     connect(this->Valve2Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
     connect(this->Valve3Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
 
-    //connect(&exg, SIGNAL(newImage(cv::Mat,qint64)), &m_rowDetect, SLOT(analyze(cv::Mat,qint64)));
-    connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_greendetect,SLOT(analyze(cv::Mat,qint64)));
+    connect(&exg, SIGNAL(newImage(cv::Mat,qint64)), &m_rowDetect, SLOT(analyze(cv::Mat,qint64)));
+    //connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_greendetect,SLOT(analyze(cv::Mat,qint64)));
     //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat,qint64)),view,SLOT(showImage(cv::Mat,qint64)));
-    connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-//    connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
+    //connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+    connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+
+    connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
 //    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
     connect(this->Valve1Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
