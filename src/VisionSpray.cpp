@@ -115,6 +115,9 @@ VisionSpray::VisionSpray()
     connect(this->plotTimer, SIGNAL(timeout()), this, SLOT(updatePlots()));
     plotTimer->start(100);
 #endif
+        
+    currentViewChanged("Excess Green");
+    currentViewChanged("Input");    
 }
 
 void VisionSpray::initPlots(void )
