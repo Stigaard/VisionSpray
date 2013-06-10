@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QRadioButton>
 #include <QDir>    
 #include <qwt/qwt_plot.h>
@@ -60,6 +61,7 @@ private:
     QPushButton * Valve2Btn;
     QPushButton * Valve3Btn;
     QPushButton * cameraSettingsBtn;
+    QCheckBox * overlayCheckbox;
     CQtOpenCVViewerGl * view;
     modicovi_rt * modicovi;
     void drawGui(void);
@@ -105,6 +107,7 @@ private slots:
     void rawVelPlot(float v);
     void filtVelPlot(float v);
     void updatePlots(void);
+    void checkboxToggled(int);
 };
 
 #endif // VisionSpray_H

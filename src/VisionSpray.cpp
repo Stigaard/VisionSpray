@@ -91,7 +91,7 @@ VisionSpray::VisionSpray()
     //connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
     connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
 
-    connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
+    //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
 //    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
     connect(this->Valve1Btn, SIGNAL(released()), this, SLOT(valveButtonMapper()));
@@ -203,6 +203,7 @@ void VisionSpray::drawGui(void )
     this->Valve1Btn = new QPushButton("Valve 1");
     this->Valve2Btn = new QPushButton("Valve 2");
     this->Valve3Btn = new QPushButton("Valve 3");
+    this->overlayCheckbox = new QCheckBox( "Enable Overlay");
     this->cameraSettingsBtn = new QPushButton("Camera settings");
     this->imageSelect = new QComboBox(globalWidget);
     //connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
@@ -216,6 +217,7 @@ void VisionSpray::drawGui(void )
     this->Layout->addWidget(view, 1,1);
     this->Layout->addWidget(imageSelect, 2,1);
     this->Layout->addWidget(sideWidget, 1,2);
+    this->sideLayout->addWidget(overlayCheckbox,6,1);
     this->sideLayout->addWidget(Valve1Btn, 2,1);
     this->sideLayout->addWidget(Valve2Btn, 3,1);
     this->sideLayout->addWidget(Valve3Btn, 4,1);
@@ -228,6 +230,7 @@ void VisionSpray::drawGui(void )
     this->sideWidget->setLayout(this->sideLayout);
     this->globalWidget->setLayout(this->Layout);
     setCentralWidget(this->globalWidget);
+    connect(this->overlayCheckbox,SIGNAL(stateChanged(int)), this, SLOT(checkboxToggled(int)));
 }
 
 void VisionSpray::initViewSelect(void )
@@ -238,6 +241,18 @@ void VisionSpray::initViewSelect(void )
     modicovi_prefix = "Modicovi:";
     this->modicovi->initViewSelect(this->imageSelect, modicovi_prefix);
     connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
+}
+
+void VisionSpray::checkboxToggled(int state)
+{
+  switch (state){
+    case Qt::Checked:
+      connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
+      break;
+    case Qt::Unchecked:
+      disconnect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
+      break;
+  }
 }
 
 
