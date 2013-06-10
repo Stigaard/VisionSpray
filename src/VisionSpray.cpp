@@ -6,10 +6,80 @@
 #include <QApplication>
 #include <QTimer>
 #include <QDateTime>
+#include "TreatmentDatabase.h"
 
+
+void showTreatment(TreatmentType treatment)
+{
+  switch(treatment)
+    {
+      case NEVER_SPRAY:
+	std::cout << "Never spray" << std::endl;
+	break;
+      case ALWAYS_SPRAY:
+	std::cout << "Always spray" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD1:
+	std::cout << "Modicovi threshold 1" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD2:
+	std::cout << "Modicovi threshold 2" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD3:
+	std::cout << "Modicovi threshold 3" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD4:
+	std::cout << "Modicovi threshold 4" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD5:
+	std::cout << "Modicovi threshold 5" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD1:
+	std::cout << "Rule of thumb threshold 1" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD2:
+	std::cout << "Rule of thumb threshold 2" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD3:
+	std::cout << "Rule of thumb threshold 3" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD4:
+	std::cout << "Rule of thumb threshold 4" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD5:
+	std::cout << "Rule of thumb threshold 5" << std::endl;
+	break;
+      default:
+	std::cout << "No match" << std::endl;
+	assert(1 == 0);
+    }
+}
 
 VisionSpray::VisionSpray()
 {
+     TreatmentDatabase tdb("../experimentalConditions/Flakkebjerg/ParcelTreatmentPlan.csv");
+     TreatmentType treatment;
+     std::cout << 1;
+     showTreatment(tdb.getTreatmentOfParcel(1));
+     std::cout << 2;
+     showTreatment(tdb.getTreatmentOfParcel(2));
+     std::cout << 3;
+     showTreatment(tdb.getTreatmentOfParcel(3));
+     std::cout << 4;
+     showTreatment(tdb.getTreatmentOfParcel(4));
+
+     std::cout << 100;
+     showTreatment(tdb.getTreatmentOfParcel(100));
+
+     std::cout << 112;
+     showTreatment(tdb.getTreatmentOfParcel(112));
+  
+     std::cout << 1177;
+     showTreatment(tdb.getTreatmentOfParcel(1177));
+  
+     std::cout << 1178;
+     showTreatment(tdb.getTreatmentOfParcel(1178));
+  
      qRegisterMetaType< cv::Mat >("cv::Mat"); 
      QString cameraSerial;
      if(settings.contains("camera1/serial"))
