@@ -75,11 +75,11 @@ void demosaic_cv::run()
 //    QString fname("Img_" + QString::number(i++) + ".png");
 //    cv::imwrite(fname.toLocal8Bit().constData(), BayerGR8);
     cv::cvtColor(BayerGR8, rgb, CV_BayerGB2BGR);
-    emit(newImage(rgb));    
+    emit(newImage(rgb, 0));    
   }
 }
 
-void demosaic_cv::newBayerGRImage(cv::Mat img)
+void demosaic_cv::newBayerGRImage(cv::Mat img, qint64 time)
 {
   Imgs.enqueue(img);
   semImg.release(1);

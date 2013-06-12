@@ -8,8 +8,77 @@
 #include <QDateTime>
 
 
+void showTreatment(TreatmentType treatment)
+{
+  switch(treatment)
+    {
+      case NEVER_SPRAY:
+	std::cout << "Never spray" << std::endl;
+	break;
+      case ALWAYS_SPRAY:
+	std::cout << "Always spray" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD1:
+	std::cout << "Modicovi threshold 1" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD2:
+	std::cout << "Modicovi threshold 2" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD3:
+	std::cout << "Modicovi threshold 3" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD4:
+	std::cout << "Modicovi threshold 4" << std::endl;
+	break;
+      case MODICOVI_THRESHOLD5:
+	std::cout << "Modicovi threshold 5" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD1:
+	std::cout << "Rule of thumb threshold 1" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD2:
+	std::cout << "Rule of thumb threshold 2" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD3:
+	std::cout << "Rule of thumb threshold 3" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD4:
+	std::cout << "Rule of thumb threshold 4" << std::endl;
+	break;
+      case RULE_OF_THUMB_THRESHOLD5:
+	std::cout << "Rule of thumb threshold 5" << std::endl;
+	break;
+      default:
+	std::cout << "No match" << std::endl;
+	assert(1 == 0);
+    }
+}
+
 VisionSpray::VisionSpray()
 {
+     tdb = new TreatmentDatabase("../experimentalConditions/Flakkebjerg/ParcelTreatmentPlan.csv");
+     
+//      std::cout << 1;
+//      showTreatment(tdb.getTreatmentOfParcel(1));
+//      std::cout << 2;
+//      showTreatment(tdb.getTreatmentOfParcel(2));
+//      std::cout << 3;
+//      showTreatment(tdb.getTreatmentOfParcel(3));
+//      std::cout << 4;
+//      showTreatment(tdb.getTreatmentOfParcel(4));
+// 
+//      std::cout << 100;
+//      showTreatment(tdb.getTreatmentOfParcel(100));
+// 
+//      std::cout << 112;
+//      showTreatment(tdb.getTreatmentOfParcel(112));
+//   
+//      std::cout << 1177;
+//      showTreatment(tdb.getTreatmentOfParcel(1177));
+//   
+//      std::cout << 1178;
+//      showTreatment(tdb.getTreatmentOfParcel(1178));
+  
      qRegisterMetaType< cv::Mat >("cv::Mat"); 
      QString cameraSerial;
      if(settings.contains("camera1/serial"))
@@ -42,18 +111,18 @@ VisionSpray::VisionSpray()
 #ifdef USE_GPS
     this->gps = new gpsReader();
     connect(this->gps, SIGNAL(velocity(float)), &m_velocityfilter, SLOT(velocitySlot(float)));
-    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
+//    connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityEcho(float)));
   #ifdef PLOT_VELOCITY
     connect(this->gps, SIGNAL(velocity(float)), this, SLOT(rawVelPlot(float)));
   #endif
 #endif
      drawGui();
-     cameraSerial = "Basler-21272794";
+     cameraSerial = "Basler-21272795";
      //TODO: Fix camera serial readin from config file
      //return;
      std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
-     float acqFramerate = 5;
+     float acqFramerate = 3;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
      this->camera->setROI(0, 0, 2046, 1086);
@@ -73,14 +142,16 @@ VisionSpray::VisionSpray()
      
      this->camera->loadCorrectionImage("../include/QtGigE/correctionimageOne.png");
      
-     //this->modicovi = new modicovi_rt;
+     this->modicovi_threshold1 = new modicovi_rt(0.1);
+     this->modicovi_threshold2 = new modicovi_rt(0.2);
+     this->modicovi_threshold3 = new modicovi_rt(0.3);
+     this->modicovi_threshold4 = new modicovi_rt(0.4);
+     this->modicovi_threshold5 = new modicovi_rt(0.5);
      //connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
      //connect(this->modicovi, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      
-     //connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
-     //connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
-     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
-
+     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
+     connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
          
     
     connect(this->Valve1Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
@@ -121,7 +192,79 @@ VisionSpray::VisionSpray()
     connect(this->plotTimer, SIGNAL(timeout()), this, SLOT(updatePlots()));
     plotTimer->start(100);
 #endif
+        
+    currentViewChanged("Excess Green");
+    currentViewChanged("Input");    
 }
+
+void VisionSpray::parcelNrReceiver(int parcel)
+{
+  TreatmentType treatment;
+  enum direction{
+    entering,
+    leaving} dir;
+  if(parcel>0)
+    dir=entering;
+  else
+  {
+    dir=leaving;
+    parcel = -parcel;
+  }
+  treatment = tdb->getTreatmentOfParcel(parcel);
+  if(dir==leaving)
+  {
+    disconnect(&exg,SIGNAL(newImage(cv::Mat,qint64)),0, 0);
+  }
+  else
+    switch(treatment)
+      {
+	case NEVER_SPRAY:
+	  std::cout << "Never spray" << std::endl;
+	  break;
+	case ALWAYS_SPRAY:
+	  std::cout << "Always spray" << std::endl;
+	  break;
+	case MODICOVI_THRESHOLD1:
+	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold1, SLOT(evaluateImage(cv::Mat,qint64)));
+	  std::cout << "Modicovi threshold 1" << std::endl;
+	  break;
+	case MODICOVI_THRESHOLD2:
+	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold2, SLOT(evaluateImage(cv::Mat,qint64)));
+	  std::cout << "Modicovi threshold 2" << std::endl;
+	  break;
+	case MODICOVI_THRESHOLD3:
+	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold3, SLOT(evaluateImage(cv::Mat,qint64)));
+	  std::cout << "Modicovi threshold 3" << std::endl;
+	  break;
+	case MODICOVI_THRESHOLD4:
+	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold4, SLOT(evaluateImage(cv::Mat,qint64)));
+	  std::cout << "Modicovi threshold 4" << std::endl;
+	  break;
+	case MODICOVI_THRESHOLD5:
+	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold5, SLOT(evaluateImage(cv::Mat,qint64)));
+	  std::cout << "Modicovi threshold 5" << std::endl;
+	  break;
+	case RULE_OF_THUMB_THRESHOLD1:
+	  std::cout << "Rule of thumb threshold 1" << std::endl;
+	  break;
+	case RULE_OF_THUMB_THRESHOLD2:
+	  std::cout << "Rule of thumb threshold 2" << std::endl;
+	  break;
+	case RULE_OF_THUMB_THRESHOLD3:
+	  std::cout << "Rule of thumb threshold 3" << std::endl;
+	  break;
+	case RULE_OF_THUMB_THRESHOLD4:
+	  std::cout << "Rule of thumb threshold 4" << std::endl;
+	  break;
+	case RULE_OF_THUMB_THRESHOLD5:
+	  std::cout << "Rule of thumb threshold 5" << std::endl;
+	  break;
+	default:
+	  std::cout << "No match" << std::endl;
+	  assert(1 == 0);
+      }
+}
+
 
 void VisionSpray::initPlots(void )
 {
@@ -178,7 +321,7 @@ void VisionSpray::velocityLog(float v)
 void VisionSpray::velocityEcho(float v)
 {
   static int i = 0;
-  this->modicoviText->setText(QString::number(round(v*10)/10));
+  //this->modicoviText->setText(QString::number(round(v*10)/10));
   if(v>0.15)
     if(i++>10)
     {
@@ -214,7 +357,7 @@ void VisionSpray::drawGui(void )
     this->imageSelect = new QComboBox(globalWidget);
     //connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
     //connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), modi, SLOT(imshowSelector(QString)));
-    this->modicoviText = new QLabel("Modicovi Score:");
+    this->currentAlgorithmText = new QLabel("Modicovi Score:");
     this->sideWidget = new QWidget(globalWidget);
     this->sideLayout = new QGridLayout(this->sideWidget);
     this->view->setMinimumHeight(768);
@@ -228,7 +371,7 @@ void VisionSpray::drawGui(void )
     this->sideLayout->addWidget(Valve2Btn, 3,1);
     this->sideLayout->addWidget(Valve3Btn, 4,1);
     this->sideLayout->addWidget(cameraSettingsBtn, 5,1);
-    this->sideLayout->addWidget(modicoviText, 1,1);
+    this->sideLayout->addWidget(currentAlgorithmText, 1,1);
 #ifdef USE_GPS
     this->gpswidget = new gpsWidget(gps);
     this->Layout->addWidget(gpswidget, 1,3);
@@ -243,9 +386,10 @@ void VisionSpray::initViewSelect(void )
 {
     this->imageSelect->addItem("Input");
     this->imageSelect->addItem("Vignette Corrected");
+    this->imageSelect->addItem("Color image");
     this->imageSelect->addItem("Excess Green");
     modicovi_prefix = "Modicovi:";
-    this->modicovi->initViewSelect(this->imageSelect, modicovi_prefix);
+    this->modicovi_threshold1->initViewSelect(this->imageSelect, modicovi_prefix);
     connect(this->imageSelect, SIGNAL(currentIndexChanged(QString)), this, SLOT(currentViewChanged(QString)));
 }
 
@@ -278,6 +422,12 @@ void VisionSpray::currentViewChanged(const QString& text)
     lastSender = this->camera;
     connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat,qint64)), this->view, SLOT(showImage(cv::Mat,qint64)));
   }
+  if(text.compare("Color image")==0)
+  {
+    lastSender = &(this->dem);
+    connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat,qint64)), &(this->dem), SLOT(newBayerGRImage(cv::Mat,qint64)));
+    connect(&(this->dem), SIGNAL(newImage(cv::Mat, qint64)), this->view, SLOT(showImage(cv::Mat,qint64)));
+  }
   if(text.compare("Excess Green")==0)
   {
     lastSender = &(this->exg);
@@ -285,9 +435,9 @@ void VisionSpray::currentViewChanged(const QString& text)
   }
   else if(text.startsWith(modicovi_prefix))
   {
-    lastSender = this->modicovi;
+    lastSender = this->modicovi_threshold1;
     QString id = text.midRef(modicovi_prefix.length()).toString();
-    this->modicovi->currentViewChanged(id, this->view);
+    this->modicovi_threshold1->currentViewChanged(id, this->view);
   }
 }
 

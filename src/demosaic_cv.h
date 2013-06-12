@@ -36,9 +36,9 @@ public:
   void run();
   void setptimer(itimerval timer);
 public slots:
-  void newBayerGRImage(cv::Mat img);
+  void newBayerGRImage(cv::Mat img, qint64 time);
 signals:
-  void newImage(cv::Mat img);
+  void newImage(cv::Mat img, qint64 time);
 private:
   QSemaphore semImg;
   QQueue<cv::Mat> Imgs;

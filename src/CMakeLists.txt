@@ -10,4 +10,5 @@ set(VisionSpray_SRCS
       ${CMAKE_CURRENT_SOURCE_DIR}/armadillointerface.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/nozzlecontrol.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/always.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/TreatmentDatabase.cpp
     PARENT_SCOPE)
