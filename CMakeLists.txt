@@ -10,7 +10,7 @@ set(EMULATE_CAMERA 1)
 set(EMULATE_ARMADILLO 1)
 
 set(USE_GPS 0) #If compiling for using a GPS
-set(USE_DATALOGGER 0) #If compiling with datalogging
+set(USE_DATALOGGER 1) #If compiling with datalogging
 set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
 set(PLOT_VELOCITY 0)

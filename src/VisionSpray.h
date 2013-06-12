@@ -47,6 +47,8 @@
   #include "../include/LoggerModule/loggermodule.h"
 #endif
 
+#include "always.h"
+
 class VisionSpray : public QMainWindow
 {
 Q_OBJECT
@@ -81,6 +83,8 @@ private:
     GreenDetect m_greendetect;
     SprayPlanner m_sprayplanner;
     velocityFilter m_velocityfilter;
+    Always m_always;
+    
 #ifdef USE_DATALOGGER
     ImageLogger * imageLog;
     LoggerModule * velocityLogger;

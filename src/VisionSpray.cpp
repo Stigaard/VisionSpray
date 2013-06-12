@@ -61,7 +61,9 @@ VisionSpray::VisionSpray()
 #ifdef USE_DATALOGGER
      this->imageLog = new ImageLogger("../Logging", "rawImages");
      this->velocityLogger = new LoggerModule("../Logging", "Velocity");
+     #ifdef USE_GPS
      connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityLog(float)));
+     #endif 
      connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat,qint64)), this->imageLog, SLOT(pngImageLogger(cv::Mat,qint64)));
 #endif
      
@@ -85,12 +87,16 @@ VisionSpray::VisionSpray()
     connect(this->Valve2Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
     connect(this->Valve3Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
 
-    connect(&exg, SIGNAL(newImage(cv::Mat,qint64)), &m_rowDetect, SLOT(analyze(cv::Mat,qint64)));
+    //connect(&exg, SIGNAL(newImage(cv::Mat,qint64)), &m_rowDetect, SLOT(analyze(cv::Mat,qint64)));
     //connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_greendetect,SLOT(analyze(cv::Mat,qint64)));
     //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat,qint64)),view,SLOT(showImage(cv::Mat,qint64)));
     //connect(&m_greendetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-    connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-
+    //connect(&m_rowDetect,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+    connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_always,SLOT(spray(cv::Mat,qint64)));
+    //connect(&exg,SIGNAL(newImage(cv::Mat,qint64)),&m_always,SLOT(dontSpray(cv::Mat,qint64)));
+    connect(&m_always,SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),&m_sprayplanner,SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+    
+    
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>, qint64)),view,SLOT(updateOverlayBuffer(cv::Mat_<uint8_t>,qint64)));
 //    connect(&armadillo, SIGNAL(forwardVelocity(float)),&m_sprayplanner,SLOT(velocity(float)));
     //connect(&m_sprayplanner,SIGNAL(sprayNozzleMap(cv::Mat_<uint8_t>,qint64)),view,SLOT(showImage(cv::Mat_<uint8_t>,qint64)));
