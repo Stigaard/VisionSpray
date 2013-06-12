@@ -84,7 +84,11 @@ private:
     //presenningExg exg;
     QSettings settings;
     NozzleControl nz;
-    RowDetect m_rowDetect;
+    RowDetect* m_rowDetect1;
+    RowDetect* m_rowDetect2;
+    RowDetect* m_rowDetect3;
+    RowDetect* m_rowDetect4;
+    RowDetect* m_rowDetect5;
     SprayTimeKeeper * spraytimekeeper;
     GreenDetect m_greendetect;
     SprayPlanner m_sprayplanner;

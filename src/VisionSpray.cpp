@@ -147,12 +147,21 @@ VisionSpray::VisionSpray()
      this->modicovi_threshold3 = new modicovi_rt(0.3);
      this->modicovi_threshold4 = new modicovi_rt(0.4);
      this->modicovi_threshold5 = new modicovi_rt(0.5);
+     this->m_rowDetect1 = new RowDetect(0.1);
+     this->m_rowDetect2 = new RowDetect(0.3);
+     this->m_rowDetect3 = new RowDetect(0.5);
+     this->m_rowDetect4 = new RowDetect(0.7);
+     this->m_rowDetect5 = new RowDetect(0.9);
      //connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi, SLOT(evaluateImage(cv::Mat,qint64)));
      //connect(this->modicovi, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      
-     connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
-     connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
-         
+     
+     // NOTE Vignetting dont work in when simulating
+     //connect(this->camera, SIGNAL(newBayerGRImage(cv::Mat, qint64)), this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
+     //connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
+     connect(this->camera,SIGNAL(newBayerGRImage(cv::Mat,qint64)),&exg,SLOT(newBayerGRImage(cv::Mat,qint64)),Qt::QueuedConnection);
+     
+     
     
     connect(this->Valve1Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
     connect(this->Valve2Btn, SIGNAL(pressed()), this, SLOT(valveButtonMapper()));
@@ -220,9 +229,11 @@ void VisionSpray::parcelNrReceiver(int parcel)
       {
 	case NEVER_SPRAY:
 	  std::cout << "Never spray" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(dontSpray(cv::Mat,qint64)));
 	  break;
 	case ALWAYS_SPRAY:
 	  std::cout << "Always spray" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(spray(cv::Mat,qint64)));
 	  break;
 	case MODICOVI_THRESHOLD1:
 	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold1, SLOT(evaluateImage(cv::Mat,qint64)));
@@ -246,18 +257,23 @@ void VisionSpray::parcelNrReceiver(int parcel)
 	  break;
 	case RULE_OF_THUMB_THRESHOLD1:
 	  std::cout << "Rule of thumb threshold 1" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect1, SLOT(analyze(cv::Mat image, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD2:
 	  std::cout << "Rule of thumb threshold 2" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect2, SLOT(analyze(cv::Mat image, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD3:
 	  std::cout << "Rule of thumb threshold 3" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect3, SLOT(analyze(cv::Mat image, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD4:
 	  std::cout << "Rule of thumb threshold 4" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect4, SLOT(analyze(cv::Mat image, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD5:
 	  std::cout << "Rule of thumb threshold 5" << std::endl;
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect5, SLOT(analyze(cv::Mat image, qint64)));
 	  break;
 	default:
 	  std::cout << "No match" << std::endl;
