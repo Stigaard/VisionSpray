@@ -15,7 +15,6 @@ set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
 set(PLOT_VELOCITY 0)
 
-set(CMAKE_BUILD_TYPE Debug)
 
 #Performance tuning
 if(PROFILE)

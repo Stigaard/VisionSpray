@@ -32,6 +32,7 @@
 #include "../include/BayerExG/exg_cv.h"
 #include "../include/PresenningExG/presenningExg.h"
 #include "../include/modicovi-rt/modicovi_rt.h"
+#include "TreatmentDatabase.h"
 
 
 #ifdef USE_GPS
@@ -57,20 +58,25 @@ public:
 private:
     void initPlots(void);
     armadilloInterface armadillo;
+    TreatmentDatabase * tdb;
     QPushButton * Valve1Btn;
     QPushButton * Valve2Btn;
     QPushButton * Valve3Btn;
     QPushButton * cameraSettingsBtn;
     QCheckBox * overlayCheckbox;
     CQtOpenCVViewerGl * view;
-    modicovi_rt * modicovi;
+    modicovi_rt * modicovi_threshold1;
+    modicovi_rt * modicovi_threshold2;
+    modicovi_rt * modicovi_threshold3;
+    modicovi_rt * modicovi_threshold4;
+    modicovi_rt * modicovi_threshold5;
     void drawGui(void);
     QGridLayout *Layout;
     QGridLayout *sideLayout;
     QWidget *globalWidget;
     QWidget *sideWidget;
     QComboBox *imageSelect;
-    QLabel * modicoviText;
+    QLabel * currentAlgorithmText;
     demosaic_cv dem;
     ExG_cv exg;
     //presenningExg exg;
@@ -108,6 +114,7 @@ private slots:
     void filtVelPlot(float v);
     void updatePlots(void);
     void checkboxToggled(int);
+    void parcelNrReceiver(int parcel);
 };
 
 #endif // VisionSpray_H
