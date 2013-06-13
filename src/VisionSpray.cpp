@@ -34,7 +34,16 @@ void VisionSpray::initOpenCV(void )
 
 void VisionSpray::initTreatmentDatabase(void )
 {
-  tdb = new TreatmentDatabase("../experimentalConditions/Flakkebjerg/ParcelTreatmentPlan.csv");
+  QString TreatmentDatabaseFile;
+  if(settings.contains("TreatmentDescription/file"))
+  TreatmentDatabaseFile = settings.value("TreatmentDescription/file").toString();
+  else
+  {
+    TreatmentDatabaseFile = "../experimentalConditions/Flakkebjerg/ParcelTreatmentPlan.csv";
+    settings.setValue("TreatmentDescription/file", "../experimentalConditions/Flakkebjerg/ParcelTreatmentPlan.csv");
+  }
+  std::cout << "Using treasment description:" << TreatmentDatabaseFile.toLocal8Bit().constData() << std::endl;
+  tdb = new TreatmentDatabase(TreatmentDatabaseFile);
 }
 
 void VisionSpray::initSprayTimeKeeper(void )
@@ -199,11 +208,12 @@ void VisionSpray::changeAlgorithm(TreatmentType treatment)
 	case NEVER_SPRAY:
 	  std::cout << "Never spray" << std::endl;
 	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(dontSpray(cv::Mat,qint64)));
+	  this->algortihm_never_spray_radio->setChecked(true);
 	  break;
 	case ALWAYS_SPRAY:
 	  std::cout << "Always spray" << std::endl;
 	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(spray(cv::Mat,qint64)));
-	  this->algortihm_never_spray_radio->setChecked(true);
+	  this->algortihm_always_spray_radio->setChecked(true);
 	  break;
 	case MODICOVI_THRESHOLD1:
 	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold1, SLOT(evaluateImage(cv::Mat,qint64)));
@@ -343,12 +353,13 @@ void VisionSpray::initAlgorithmRadio(void )
   algorithm_rule_of_thumb_threshold5 = new QRadioButton("Rule of Thumb 5");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold5);
   this->algorithm_radio_group->setLayout(algorithm_layout);
-  connect(this->algorithm_checkbox_mapper, SIGNAL(mapped(QString)), this, SLOT(algorithmRadioCommand(int)));
+  connect(this->algorithm_checkbox_mapper, SIGNAL(mapped(int)), this, SLOT(algorithmRadioCommand(int)));
 }
 
 void VisionSpray::algorithmRadioCommand(int cmd)
 {
   std::cout << "Received checkbox request to change to " << (TreatmentType)cmd << std::endl;
+  changeAlgorithm((TreatmentType)cmd);
 }
 
 
@@ -461,7 +472,7 @@ void VisionSpray::drawGui(void )
     this->Layout->addWidget(view, 1,1);
     this->Layout->addWidget(imageSelect, 2,1);
     this->Layout->addWidget(sideWidget, 1,2);
-    this->sideLayout->addWidget(overlayCheckbox,6,1);
+    this->sideLayout->addWidget(overlayCheckbox,7,1);
     this->sideLayout->addWidget(Valve1Btn, 3,1);
     this->sideLayout->addWidget(Valve2Btn, 4,1);
     this->sideLayout->addWidget(Valve3Btn, 5,1);

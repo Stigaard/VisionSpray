@@ -47,6 +47,7 @@ protected:
     virtual void run();
 signals:
   void forwardVelocity(float v);
+  void parcelReceiver(int parcel);
 };
 
 #endif // ARMADILLOINTERFACE_H
