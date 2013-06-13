@@ -62,6 +62,7 @@ void armadilloInterface::run()
     ros = new qtRosBridge(rosAdr, rosBridgePort);
     connect(ros, SIGNAL(newMsg(QVariant)), this, SLOT(msgFromRosReceiver(QVariant)));
     ros->subscribe("/fmKnowledge/encoder_odom", "nav_msgs/Odometry", 500);  
+    ros->subscribe("/fmKnowledge/polygon_map", "/fmLib/msgs/msg/IntStamped", 500);  
 #else
     while(true)
     {
@@ -80,6 +81,13 @@ void armadilloInterface::msgFromRosReceiver(QVariant msg)
     float vel = msg.toMap()["msg"].toMap()["twist"].toMap()["twist"].toMap()["linear"].toMap()["x"].toDouble();
 //    qDebug() << "Velocity: " << vel;
     emit(forwardVelocity(vel));
+  }
+  
+  if(msg.toMap()["topic"].toString().compare("/fmKnowledge/polygon_map")==0)
+  {
+    int parcel = msg.toMap()["msg"].toMap()["data"].toInt();
+//    qDebug() << "Velocity: " << vel;
+    emit(parcelReceiver(parcel));
   }
 //  qDebug() << flush;
 }
