@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QVBoxLayout>
 #include <QComboBox>
 #include <QWidget>
 #include <QLabel>
@@ -19,6 +20,7 @@
 #include <QSettings>
 #include <QQueue>
 #include <QTimer>
+#include <QGroupBox>
 
 #include "../include/qOpenGLCVWidget/qOpenGLCVWidget.h"
 #include "demosaic_cv.h"
@@ -94,13 +96,40 @@ private:
     SprayPlanner m_sprayplanner;
     velocityFilter m_velocityfilter;
     Always m_always;
+    QRadioButton * algortihm_never_spray_radio;
+    QRadioButton * algortihm_always_spray_radio;
+    QRadioButton * algorithm_modicovi_threshold1;
+    QRadioButton * algorithm_modicovi_threshold2;
+    QRadioButton * algorithm_modicovi_threshold3;
+    QRadioButton * algorithm_modicovi_threshold4;
+    QRadioButton * algorithm_modicovi_threshold5;
+    QRadioButton * algorithm_rule_of_thumb_threshold1;
+    QRadioButton * algorithm_rule_of_thumb_threshold2;
+    QRadioButton * algorithm_rule_of_thumb_threshold3;
+    QRadioButton * algorithm_rule_of_thumb_threshold4;
+    QRadioButton * algorithm_rule_of_thumb_threshold5;
+    QGroupBox * algorithm_radio_group;
+    QVBoxLayout * algorithm_layout;
+    void initAlgorithmRadio(void);
+    void changeAlgorithm(TreatmentType treatment);
+    void initCamera(void);
+    void initGPS(void);
+    void initConfigFile(void);
+    void initDatalogger(void);
+    void initModicovi(void);
+    void initRowDetect(void);
+    void initSprayPlanner(void);
+    void initSprayTimeKeeper(void);
+    void initTreatmentDatabase(void);
+    void initOpenCV(void);
+    
+    QSignalMapper * algorithm_checkbox_mapper;
     
 #ifdef USE_DATALOGGER
     ImageLogger * imageLog;
     LoggerModule * velocityLogger;
 #endif
 #ifdef USE_GPS
-    void loadGPS(void);
     gpsReader * gps;
     gpsWidget *gpswidget;
 #endif
@@ -123,6 +152,7 @@ private slots:
     void updatePlots(void);
     void checkboxToggled(int);
     void parcelNrReceiver(int parcel);
+    void algorithmRadioCommand(int cmd);
 };
 
 #endif // VisionSpray_H
