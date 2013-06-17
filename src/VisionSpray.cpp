@@ -92,22 +92,23 @@ void VisionSpray::initRowDetect(void )
 {
      double vegetationInRow = 0.7;
      double ExGThresholdValue = 0.52*255;
+     double scaleFactor = 0.5; // From downscaling when converting image to exg.
 
      // Value found by this equation 75 cm * 2046 pix / 87 cm =~ 1764.
-     double distanceBetweenRows = 1764;  
-     this->m_rowDetect1 = new RowDetect(vegetationInRow, ExGThresholdValue, 180, distanceBetweenRows);
+     double distanceBetweenRows = 1764*scaleFactor;  
+     this->m_rowDetect1 = new RowDetect(vegetationInRow, ExGThresholdValue, 180*scaleFactor, distanceBetweenRows);
      connect(this->m_rowDetect1, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-     this->m_rowDetect2 = new RowDetect(vegetationInRow, ExGThresholdValue, 190, distanceBetweenRows);
+     this->m_rowDetect2 = new RowDetect(vegetationInRow, ExGThresholdValue, 190*scaleFactor, distanceBetweenRows);
      connect(this->m_rowDetect2, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
-     this->m_rowDetect3 = new RowDetect(vegetationInRow, ExGThresholdValue, 200, distanceBetweenRows);
+     this->m_rowDetect3 = new RowDetect(vegetationInRow, ExGThresholdValue, 200*scaleFactor, distanceBetweenRows);
      connect(this->m_rowDetect3, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64))); 
-     this->m_rowDetect4 = new RowDetect(vegetationInRow, ExGThresholdValue, 210, distanceBetweenRows);
+     this->m_rowDetect4 = new RowDetect(vegetationInRow, ExGThresholdValue, 210*scaleFactor, distanceBetweenRows);
      connect(this->m_rowDetect4, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 	     
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));     
-     this->m_rowDetect5 = new RowDetect(vegetationInRow, ExGThresholdValue, 220, distanceBetweenRows);
+     this->m_rowDetect5 = new RowDetect(vegetationInRow, ExGThresholdValue, 220*scaleFactor, distanceBetweenRows);
      connect(this->m_rowDetect5, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
 }
