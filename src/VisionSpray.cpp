@@ -26,6 +26,9 @@ VisionSpray::VisionSpray()
     drawGui();
 
     this->camera->startAquisition();
+    
+    currentViewChanged("Excess Green");
+    currentViewChanged("Input");   
 }
 
 void VisionSpray::initOpenCV(void )
