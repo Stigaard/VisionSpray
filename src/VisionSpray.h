@@ -153,6 +153,7 @@ private slots:
     void checkboxToggled(int);
     void parcelNrReceiver(int parcel);
     void algorithmRadioCommand(int cmd);
+    void initParcelReceiver();
 };
 
 #endif // VisionSpray_H

@@ -43,7 +43,6 @@ void velocityFilter::velocitySlot(float vel)
     x = section[i]->eval(x);
 //    std::cout << "x[" << i << "]=" << x << "	";
   }
-  std::cout << std::endl;
   emit(velocity(x));
 }
 

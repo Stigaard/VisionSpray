@@ -10,21 +10,22 @@
 
 VisionSpray::VisionSpray()
 {
-     initOpenCV();
-     initConfigFile();
-     initTreatmentDatabase();
-     initCamera();
-     initGPS();
-     initPlots();
-     initDatalogger();
-     initModicovi();
-     initRowDetect();
-     initSprayPlanner();
-     initSprayTimeKeeper();
-     
-     drawGui();
-     
-     this->camera->startAquisition();
+    initOpenCV();
+    initConfigFile();
+    initTreatmentDatabase();
+    initCamera();
+    initGPS();
+    initPlots();
+    initDatalogger();
+    initModicovi();
+    initRowDetect();
+    initSprayPlanner();
+    initSprayTimeKeeper();
+    initParcelReceiver();
+
+    drawGui();
+
+    this->camera->startAquisition();
 }
 
 void VisionSpray::initOpenCV(void )
@@ -243,27 +244,27 @@ void VisionSpray::changeAlgorithm(TreatmentType treatment)
 	case RULE_OF_THUMB_THRESHOLD1:
 	  this->algorithm_rule_of_thumb_threshold1->setChecked(true);
 	  std::cout << "Rule of thumb threshold 1" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect1, SLOT(analyze(cv::Mat image, qint64)));
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect1, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD2:
 	  this->algorithm_rule_of_thumb_threshold2->setChecked(true);
 	  std::cout << "Rule of thumb threshold 2" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect2, SLOT(analyze(cv::Mat image, qint64)));
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect2, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD3:
 	  this->algorithm_rule_of_thumb_threshold3->setChecked(true);
 	  std::cout << "Rule of thumb threshold 3" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect3, SLOT(analyze(cv::Mat image, qint64)));
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect3, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD4:
 	  this->algorithm_rule_of_thumb_threshold4->setChecked(true);
 	  std::cout << "Rule of thumb threshold 4" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect4, SLOT(analyze(cv::Mat image, qint64)));
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect4, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD5:
 	  this->algorithm_rule_of_thumb_threshold5->setChecked(true);
 	  std::cout << "Rule of thumb threshold 5" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect5, SLOT(analyze(cv::Mat image, qint64)));
+	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect5, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	default:
 	  std::cout << "No match" << std::endl;
@@ -554,6 +555,12 @@ void VisionSpray::currentViewChanged(const QString& text)
     this->modicovi_threshold1->currentViewChanged(id, this->view);
   }
 }
+
+void VisionSpray::initParcelReceiver()
+{
+  connect(&(this->armadillo), SIGNAL(parcelReceiver(int)), this, SLOT(parcelNrReceiver(int)));
+}
+
 
 VisionSpray::~VisionSpray()
 {}
