@@ -108,6 +108,7 @@ private:
     QRadioButton * algorithm_rule_of_thumb_threshold3;
     QRadioButton * algorithm_rule_of_thumb_threshold4;
     QRadioButton * algorithm_rule_of_thumb_threshold5;
+    QRadioButton * algorithm_green_detect;
     QGroupBox * algorithm_radio_group;
     QVBoxLayout * algorithm_layout;
     void initAlgorithmRadio(void);
@@ -118,6 +119,7 @@ private:
     void initDatalogger(void);
     void initModicovi(void);
     void initRowDetect(void);
+    void initGreenDetect(void);
     void initSprayPlanner(void);
     void initSprayTimeKeeper(void);
     void initTreatmentDatabase(void);
@@ -143,6 +145,7 @@ private:
     void initViewSelect(void);
     QString modicovi_prefix;
 private slots:
+    void algorithmMux_in(cv::Mat img, qint64 timestampus);
     void currentViewChanged ( const QString & text );
     void valveButtonMapper();
     void velocityEcho(float v);
@@ -154,6 +157,8 @@ private slots:
     void parcelNrReceiver(int parcel);
     void algorithmRadioCommand(int cmd);
     void initParcelReceiver();
+signals:
+  void algorithmMux_out(cv::Mat img, qint64 timestampus);
 };
 
 #endif // VisionSpray_H

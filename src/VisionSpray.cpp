@@ -19,6 +19,7 @@ VisionSpray::VisionSpray()
     initDatalogger();
     initModicovi();
     initRowDetect();
+    initGreenDetect();
     initSprayPlanner();
     initSprayTimeKeeper();
     initParcelReceiver();
@@ -53,6 +54,11 @@ void VisionSpray::initSprayTimeKeeper(void )
      connect(&m_sprayplanner,SIGNAL(spray(int,qint64,qint64)),spraytimekeeper,SLOT(Spray(int,qint64,qint64)));
 }
 
+void VisionSpray::algorithmMux_in(cv::Mat img, qint64 timestampus)
+{
+  emit(algorithmMux_out(img, timestampus));
+}
+
 
 void VisionSpray::initSprayPlanner(void )
 {
@@ -82,10 +88,26 @@ void VisionSpray::initModicovi(void )
 void VisionSpray::initRowDetect(void )
 {
      this->m_rowDetect1 = new RowDetect(0.1);
+     connect(this->m_rowDetect1, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
+	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      this->m_rowDetect2 = new RowDetect(0.3);
+     connect(this->m_rowDetect2, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
+	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      this->m_rowDetect3 = new RowDetect(0.5);
+     connect(this->m_rowDetect3, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
+	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      this->m_rowDetect4 = new RowDetect(0.7);
+     connect(this->m_rowDetect4, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
+	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      this->m_rowDetect5 = new RowDetect(0.9);
+     connect(this->m_rowDetect5, SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)), 
+	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
+}
+
+void VisionSpray::initGreenDetect(void )
+{
+  connect(&(this->m_greendetect), SIGNAL(analysisResult(cv::Mat_<uint8_t>,qint64)),
+	  &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
 }
 
 
@@ -101,7 +123,7 @@ void VisionSpray::initCamera(void )
      }
      std::cout << "Camera serial:" << cameraSerial.toLocal8Bit().constData() << std::endl;
      this->camera = new QTGIGE(cameraSerial.toLocal8Bit().constData());
-     float acqFramerate = 3;
+     float acqFramerate = 2;
      this->camera->writeBool("AcquisitionFrameRateEnable", true);
      this->camera->writeFloat("AcquisitionFrameRateAbs", acqFramerate);
      this->camera->setROI(0, 0, 2046, 1086);
@@ -110,6 +132,7 @@ void VisionSpray::initCamera(void )
 	     this->camera, SLOT(correctVignetting(cv::Mat, qint64)), Qt::QueuedConnection);
      connect(this->camera, SIGNAL(vignettingCorrectedInImage(cv::Mat, qint64)), 
 	     &exg, SLOT(newBayerGRImage(cv::Mat, qint64)), Qt::QueuedConnection);
+     connect(&exg, SIGNAL(newImage(cv::Mat,qint64)), this, SLOT(algorithmMux_in(cv::Mat,qint64)));
 }
 
 void VisionSpray::initGPS(void )
@@ -203,68 +226,73 @@ void showTreatment(TreatmentType treatment)
 
 void VisionSpray::changeAlgorithm(TreatmentType treatment)
 {
-   disconnect(&exg,SIGNAL(newImage(cv::Mat,qint64)),0, 0);
+   disconnect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)),0, 0);
     switch(treatment)
       {
 	case NEVER_SPRAY:
 	  std::cout << "Never spray" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(dontSpray(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)),&(this->m_always),SLOT(dontSpray(cv::Mat,qint64)));
 	  this->algortihm_never_spray_radio->setChecked(true);
 	  break;
 	case ALWAYS_SPRAY:
 	  std::cout << "Always spray" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)),&(this->m_always),SLOT(spray(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)),&(this->m_always),SLOT(spray(cv::Mat,qint64)));
 	  this->algortihm_always_spray_radio->setChecked(true);
 	  break;
 	case MODICOVI_THRESHOLD1:
-	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold1, SLOT(evaluateImage(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->modicovi_threshold1, SLOT(evaluateImage(cv::Mat,qint64)));
 	  this->algorithm_modicovi_threshold1->setChecked(true);
 	  std::cout << "Modicovi threshold 1" << std::endl;
 	  break;
 	case MODICOVI_THRESHOLD2:
-	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold2, SLOT(evaluateImage(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->modicovi_threshold2, SLOT(evaluateImage(cv::Mat,qint64)));
 	  this->algorithm_modicovi_threshold2->setChecked(true);
 	  std::cout << "Modicovi threshold 2" << std::endl;
 	  break;
 	case MODICOVI_THRESHOLD3:
-	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold3, SLOT(evaluateImage(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->modicovi_threshold3, SLOT(evaluateImage(cv::Mat,qint64)));
 	  this->algorithm_modicovi_threshold3->setChecked(true);
 	  std::cout << "Modicovi threshold 3" << std::endl;
 	  break;
 	case MODICOVI_THRESHOLD4:
-	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold4, SLOT(evaluateImage(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->modicovi_threshold4, SLOT(evaluateImage(cv::Mat,qint64)));
 	  this->algorithm_modicovi_threshold4->setChecked(true);
 	  std::cout << "Modicovi threshold 4" << std::endl;
 	  break;
 	case MODICOVI_THRESHOLD5:
-	  connect(&(this->exg), SIGNAL(newImage(cv::Mat,qint64)), this->modicovi_threshold5, SLOT(evaluateImage(cv::Mat,qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->modicovi_threshold5, SLOT(evaluateImage(cv::Mat,qint64)));
 	  this->algorithm_modicovi_threshold5->setChecked(true);
 	  std::cout << "Modicovi threshold 5" << std::endl;
 	  break;
 	case RULE_OF_THUMB_THRESHOLD1:
 	  this->algorithm_rule_of_thumb_threshold1->setChecked(true);
 	  std::cout << "Rule of thumb threshold 1" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect1, SLOT(analyze(cv::Mat, qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->m_rowDetect1, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD2:
 	  this->algorithm_rule_of_thumb_threshold2->setChecked(true);
 	  std::cout << "Rule of thumb threshold 2" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect2, SLOT(analyze(cv::Mat, qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->m_rowDetect2, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD3:
 	  this->algorithm_rule_of_thumb_threshold3->setChecked(true);
 	  std::cout << "Rule of thumb threshold 3" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect3, SLOT(analyze(cv::Mat, qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->m_rowDetect3, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD4:
 	  this->algorithm_rule_of_thumb_threshold4->setChecked(true);
 	  std::cout << "Rule of thumb threshold 4" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect4, SLOT(analyze(cv::Mat, qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->m_rowDetect4, SLOT(analyze(cv::Mat, qint64)));
 	  break;
 	case RULE_OF_THUMB_THRESHOLD5:
 	  this->algorithm_rule_of_thumb_threshold5->setChecked(true);
 	  std::cout << "Rule of thumb threshold 5" << std::endl;
-	  connect(&(this->exg),SIGNAL(newImage(cv::Mat,qint64)), this->m_rowDetect5, SLOT(analyze(cv::Mat, qint64)));
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), this->m_rowDetect5, SLOT(analyze(cv::Mat, qint64)));
+	  break;
+	case GREEN_DETECT:
+	  this->algorithm_green_detect->setChecked(true);
+	  std::cout << "Green detect" << std::endl;
+	  connect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)), &(this->m_greendetect), SLOT(analyze(cv::Mat,qint64)));
 	  break;
 	default:
 	  std::cout << "No match" << std::endl;
@@ -345,14 +373,40 @@ void VisionSpray::initAlgorithmRadio(void )
   
   algorithm_rule_of_thumb_threshold1 = new QRadioButton("Rule of Thumb 1");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold1);
+  connect(this->algorithm_rule_of_thumb_threshold1, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_rule_of_thumb_threshold1, (int)RULE_OF_THUMB_THRESHOLD1);
+  
   algorithm_rule_of_thumb_threshold2 = new QRadioButton("Rule of Thumb 2");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold2);
+  connect(this->algorithm_rule_of_thumb_threshold2, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_rule_of_thumb_threshold2, (int)RULE_OF_THUMB_THRESHOLD2);
+  
   algorithm_rule_of_thumb_threshold3 = new QRadioButton("Rule of Thumb 3");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold3);
+  connect(this->algorithm_rule_of_thumb_threshold3, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_rule_of_thumb_threshold3, (int)RULE_OF_THUMB_THRESHOLD3);
+  
   algorithm_rule_of_thumb_threshold4 = new QRadioButton("Rule of Thumb 4");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold4);
+  connect(this->algorithm_rule_of_thumb_threshold4, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_rule_of_thumb_threshold4, (int)RULE_OF_THUMB_THRESHOLD4);
+  
   algorithm_rule_of_thumb_threshold5 = new QRadioButton("Rule of Thumb 5");
   algorithm_layout->addWidget(algorithm_rule_of_thumb_threshold5);
+  connect(this->algorithm_rule_of_thumb_threshold5, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_rule_of_thumb_threshold5, (int)RULE_OF_THUMB_THRESHOLD5);
+  
+  algorithm_green_detect = new QRadioButton("Green detect");
+  algorithm_layout->addWidget(algorithm_green_detect);
+  connect(this->algorithm_green_detect, SIGNAL(pressed()),
+	this->algorithm_checkbox_mapper, SLOT(map()));
+  algorithm_checkbox_mapper->setMapping(this->algorithm_green_detect, (int)GREEN_DETECT);
+  
   this->algorithm_radio_group->setLayout(algorithm_layout);
   connect(this->algorithm_checkbox_mapper, SIGNAL(mapped(int)), this, SLOT(algorithmRadioCommand(int)));
 }

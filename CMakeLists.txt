@@ -6,10 +6,10 @@ find_package(Qwt)
 find_package(OpenCV REQUIRED)
 find_package(RT REQUIRED)
 find_package(OpenGL REQUIRED)
-set(EMULATE_CAMERA 1)
-set(EMULATE_ARMADILLO 1)
+set(EMULATE_CAMERA 0)
+set(EMULATE_ARMADILLO 0)
 
-set(USE_GPS 0) #If compiling for using a GPS
+set(USE_GPS 1) #If compiling for using a GPS
 set(USE_DATALOGGER 1) #If compiling with datalogging
 set(CalibrateSprayTime 0) #If compiling for spray calibration
 set(PROFILE 0) #If enabling profiling
