@@ -130,6 +130,8 @@ private:
 #ifdef USE_DATALOGGER
     ImageLogger * imageLog;
     LoggerModule * velocityLogger;
+    LoggerModule * treatmentLogger;
+    LoggerModule * parcelLogger;
 #endif
 #ifdef USE_GPS
     gpsReader * gps;

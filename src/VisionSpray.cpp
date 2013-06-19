@@ -71,11 +71,11 @@ void VisionSpray::initSprayPlanner(void )
 
 void VisionSpray::initModicovi(void )
 {
-     this->modicovi_threshold1 = new modicovi_rt(0.1);
-     this->modicovi_threshold2 = new modicovi_rt(0.2);
-     this->modicovi_threshold3 = new modicovi_rt(0.3);
-     this->modicovi_threshold4 = new modicovi_rt(0.4);
-     this->modicovi_threshold5 = new modicovi_rt(0.5);
+     this->modicovi_threshold1 = new modicovi_rt(0.0127);
+     this->modicovi_threshold2 = new modicovi_rt(0.025);
+     this->modicovi_threshold3 = new modicovi_rt(0.115);
+     this->modicovi_threshold4 = new modicovi_rt(0.271175874698044);
+     this->modicovi_threshold5 = new modicovi_rt(0.833233568777685);
      connect(this->modicovi_threshold1, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), 
 	     &(this->m_sprayplanner), SLOT(sprayMap(cv::Mat_<uint8_t>,qint64)));
      connect(this->modicovi_threshold2, SIGNAL(sprayMap(cv::Mat_<uint8_t>,qint64)), 
@@ -179,6 +179,8 @@ void VisionSpray::initDatalogger(void )
 #ifdef USE_DATALOGGER
      this->imageLog = new ImageLogger("../Logging", "rawImages");
      this->velocityLogger = new LoggerModule("../Logging", "Velocity");
+     this->treatmentLogger = new LoggerModule("../Logging", "Treatment");
+     this->parcelLogger = new LoggerModule("../Logging", "Parcel");
      #ifdef USE_GPS
      connect(this->gps, SIGNAL(velocity(float)), this, SLOT(velocityLog(float)));
      #endif 
@@ -236,6 +238,7 @@ void showTreatment(TreatmentType treatment)
 void VisionSpray::changeAlgorithm(TreatmentType treatment)
 {
    disconnect(this,SIGNAL(algorithmMux_out(cv::Mat,qint64)),0, 0);
+   this->treatmentLogger->log("TreatmentStart", (int)treatment);
     switch(treatment)
       {
 	case NEVER_SPRAY:
@@ -312,6 +315,9 @@ void VisionSpray::changeAlgorithm(TreatmentType treatment)
 
 void VisionSpray::parcelNrReceiver(int parcel)
 {
+#ifdef USE_DATALOGGER
+  this->parcelLogger->log("parcel", parcel);
+#endif
   TreatmentType treatment;
   enum direction{
     entering,
